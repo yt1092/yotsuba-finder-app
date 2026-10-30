@@ -299,12 +299,15 @@ try {
     await page.goto(`${BASE}/detail.html?id=${photo.id}`);
     await page.waitForSelector('#detailNoPhoto:not([hidden])');
   });
-  await step('このアプリについて: 設定から開ける。ソースコードの URL は仮のあいだは出さない。ライセンスの全文・部品の一覧が、自分のサイトから出る', async () => {
+  await step('このアプリについて: 設定から開ける。ソースコードのリンク（公開したリポジトリ）とイラストの出どころが出る。ライセンスの全文・部品の一覧が、自分のサイトから出る', async () => {
     await page.goto(`${BASE}/settings.html`);
     await page.click('a[href="about.html"]');
     await page.waitForSelector('#partsList li');
-    assert.equal(await page.isVisible('#sourceLink'), false);
-    assert.equal(await page.isVisible('#sourceWait'), true);
+    // ソースコードのリンク（押さない。外のサイトなので、通信の数に入れないため）
+    assert.equal(await page.isVisible('#sourceLink'), true);
+    assert.equal(await page.getAttribute('#sourceLink', 'href'), 'https://github.com/yt1092/yotsuba-finder-app');
+    assert.equal(await page.isVisible('#sourceWait'), false);
+    assert.equal(await page.isVisible('text=イラスト：ChatGPT（OpenAI）で生成'), true);
     assert.ok(await page.locator('#partsList li').count() >= 5);
     assert.match(await page.textContent('#partsList'), /onnxruntime-web 1\.30\.0（MIT）/);
     await page.click('details[data-src="/about/LICENSE.txt"] summary');
