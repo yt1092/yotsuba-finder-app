@@ -1,0 +1,2330 @@
+/* フォント: Zen Maru Gothic（画面の文字。見出し 700・本文 500）と Nunito（数字・英字）を自分のサイトから配る（外部通信をしない） */
+/* 画面の文字: Zen Maru Gothic（500・700）。アプリの中の固定の文字だけに減らしたもの（scripts/make_fonts.py）を、自分のサイトから配る
+   （1 つの太さ 約 125KB。Service Worker で事前にキャッシュ）。利用者が入れた文字で、ここに無いものは、次のフォントで表示される */
+@font-face {
+  font-family: 'Zen Maru Gothic';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/zen-maru-gothic-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Zen Maru Gothic';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/zen-maru-gothic-700.woff2') format('woff2');
+}
+@import '@fontsource/nunito/latin-700.css';
+@import '@fontsource/nunito/latin-800.css';
+
+/* ────────────────────────────────────────────
+   CSS 変数: ライトテーマ（Morning Meadow）
+──────────────────────────────────────────── */
+:root {
+  /* 文字の色: 真っ黒ではなく、濃い緑（背景とのコントラスト比 4.5:1 以上） */
+  --text: #2F4A35;
+  --text2: #4C6B54;
+  --accent: #1D6B33;
+  --gold: #8A5F00;
+  --bg: radial-gradient(70% 40% at 88% 4%, rgba(255,226,140,0.60) 0%, rgba(255,226,140,0) 70%),
+        radial-gradient(100% 50% at 0% 0%, rgba(190,235,170,0.70) 0%, rgba(190,235,170,0) 60%),
+        linear-gradient(180deg, #F6FAEA 0%, #E6F2D8 60%, #D6E9C5 100%);
+  --surface: rgba(255,255,255,0.78);
+  --surface-line: rgba(255,255,255,0.95);
+  --surface-shadow: 0 8px 20px rgba(54,98,50,0.12), 0 0 0 1px rgba(40,100,50,0.05);
+  --hair: rgba(40,100,50,0.10);
+  --btn: linear-gradient(180deg, #278440 0%, #19692F 100%);
+  --btn-text: #FFFFFF;
+  --btn-shadow: 0 10px 24px rgba(31,122,56,0.30), inset 0 1px 0 rgba(255,255,255,0.25);
+  --nav: rgba(255,255,255,0.86);
+  --nav-line: rgba(255,255,255,0.95);
+  --nav-shadow: 0 16px 36px rgba(54,98,50,0.22), 0 0 0 1px rgba(40,100,50,0.06);
+  --nav-off: #4C6B54;
+  --nav-on: #1D6B33;
+  --notch: #EAF4DE;
+  --chip: #DDF1D2;
+  --dash: rgba(29,107,51,0.50);
+  --glass: rgba(255,255,255,0.82);
+  --glass-text: #2F4A35;
+  --glass-shadow: 0 6px 16px rgba(10,60,25,0.25);
+  --scan-card: rgba(255,255,255,0.88);
+  --mark: #2F9E4F;
+  --sheet: #FBFDF6;
+  --field: #EEF6E6;
+  --lucky: #FFE9A8;
+  --danger: #B3261E;
+  --danger-line: rgba(179,38,30,0.35);
+  --danger-bg: rgba(179,38,30,0.06);
+  --glow: rgba(255,224,130,0.70);
+  --gold-frame: linear-gradient(135deg, #F2B84B, #FFE9A8 50%, #F2B84B);
+  /* 背景の基本色。html の背景と theme-color に使う（画面の上や下に白い帯が出ないように） */
+  --bg-base: #EEF6E2;
+
+  /* 押せるものの最小の大きさ（アイコンだけのボタンも 56px。主なボタンは 64px 以上） */
+  --tap: 56px;
+  --btn-h: 56px;
+  --btn-primary-h: 64px;
+
+  /* 画面の上下の余白（セーフエリア＋見た目の余白） */
+  --safe-top: calc(env(safe-area-inset-top, 0px) + 16px);
+  --safe-bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+
+  /* ボトムナビの寸法（コンテンツ下の余白計算に使う） */
+  --tabbar-h: 80px;
+  --tabbar-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+  --tabbar-space: calc(var(--tabbar-h) + var(--tabbar-bottom) + 24px);
+}
+
+/* ────────────────────────────────────────────
+   CSS 変数: ダークテーマ（Night Forest）
+   端末設定で自動切替
+──────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #F2F8EE;
+    --text2: #A7BDAE;
+    --accent: #CFFF7A;
+    --gold: #FFD27A;
+    --bg: radial-gradient(120% 55% at 15% -8%, rgba(46,160,80,0.42) 0%, rgba(46,160,80,0) 60%),
+          radial-gradient(90% 45% at 105% 32%, rgba(20,120,110,0.30) 0%, rgba(20,120,110,0) 60%),
+          #07140D;
+    --surface: rgba(255,255,255,0.07);
+    --surface-line: rgba(255,255,255,0.12);
+    --surface-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    --hair: rgba(255,255,255,0.08);
+    --btn: linear-gradient(180deg, #D4FF7E 0%, #8FEA5C 100%);
+    --btn-text: #0A1F12;
+    --btn-shadow: 0 10px 30px rgba(143,234,92,0.32), inset 0 1px 0 rgba(255,255,255,0.6);
+    --nav: rgba(14,34,22,0.72);
+    --nav-line: rgba(255,255,255,0.12);
+    --nav-shadow: 0 18px 40px rgba(0,0,0,0.45);
+    --nav-off: #8FA899;
+    --nav-on: #CFFF7A;
+    --notch: #0B1D13;
+    --chip: rgba(198,243,107,0.14);
+    --dash: rgba(207,255,122,0.45);
+    --glass: rgba(8,24,14,0.60);
+    --glass-text: #F2F8EE;
+    --glass-shadow: 0 6px 16px rgba(0,0,0,0.35);
+    --scan-card: rgba(10,28,17,0.74);
+    --mark: #C6F36B;
+    --sheet: #0E2217;
+    --field: rgba(255,255,255,0.07);
+    --lucky: rgba(255,210,122,0.16);
+    --danger: #FF8A80;
+    --danger-line: rgba(255,138,128,0.4);
+    --danger-bg: rgba(255,138,128,0.08);
+    --glow: rgba(255,210,122,0.30);
+    --gold-frame: linear-gradient(135deg, #CFFF7A, #FFD27A 50%, #CFFF7A);
+    --bg-base: #07140D;
+  }
+}
+
+/* ────────────────────────────────────────────
+   リセット・ベース
+──────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+}
+
+/* html と body にも背景色を付ける（付けないと白になり、ステータスバーの裏や、
+   引っぱって戻るときに見える部分が、白い帯になる） */
+html, body {
+  background-color: var(--bg-base);
+}
+
+/* iPhone: 続けて 2 回たたいたときに、画面が拡大しないようにする（ボタンを速く押す「入れない」「つぎへ」「もどす」など）。
+   ピンチでの拡大は、見えにくい人のために残す（viewport に user-scalable=no は付けない）。
+   touch-action は親の指定とかけ合わさるので、html と body に付ければ、ページ全体に効く。触るものにも念のため付ける */
+html, body,
+a, button, label, summary, img, canvas, video, svg,
+input, textarea, select, [role="button"], [role="radio"], [role="tab"], [tabindex] {
+  touch-action: manipulation;
+}
+
+/* カメラの画面の、枠の見方（凡例）。押せるものではない。初めて見たあとは小さく（.scan-legend--small） */
+.scan-legend {
+  position: absolute;
+  top: calc(var(--safe-top) + 64px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 14px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap;
+  color: #FFFFFF;
+  background: rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+}
+.scan-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.scan-legend-four,
+.scan-legend-three {
+  display: inline-block;
+  width: 18px;
+  height: 14px;
+  border-radius: 3px;
+}
+.scan-legend-four {
+  border: 3px dashed #F5C242;
+  box-shadow: 0 0 0 1px rgba(58, 42, 0, 0.85);
+}
+.scan-legend-three {
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+}
+/* スキャン中の印（緑の点）。一時停止・お休みのときは、再開の三角 */
+.scan-dot {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--mark);
+  box-shadow: 0 0 8px var(--mark);
+}
+.scan-status[aria-pressed="true"] .scan-dot {
+  width: 0;
+  height: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  border-style: solid;
+  border-width: 6px 0 6px 10px;
+  border-color: transparent transparent transparent currentColor;
+}
+
+/* カメラが使えないとき・止まったとき */
+.camera-help {
+  position: absolute;
+  left: max(20px, env(safe-area-inset-left));
+  right: max(20px, env(safe-area-inset-right));
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border-radius: 24px;
+  color: var(--text);
+  background: var(--sheet);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+.camera-help[hidden] {
+  display: none;
+}
+.camera-help-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+}
+.camera-help-text {
+  margin: 8px 0 16px;
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+/* せまい画面（320px など）: 上のバーの「自動で探しています」が 2 行にならないように */
+@media (max-width: 359px) {
+  #scanTop {
+    left: 12px !important;
+    right: 12px !important;
+  }
+  .scan-status {
+    padding: 0 10px !important;
+    gap: 6px !important;
+    letter-spacing: 0;
+  }
+}
+
+.scan-legend--small {
+  gap: 10px;
+  padding: 3px 10px;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* キャラクターの表情（src/lib/mascot.ts）。飾りなので、押せない・選べない・動かさない */
+.mascot {
+  display: block;
+  flex: 0 0 auto;
+  max-width: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+.mascot[hidden] {
+  display: none;
+}
+.mascot-center {
+  margin: 0 auto 8px;
+}
+.levelup .mascot {
+  margin: 0 auto;
+}
+/* smile の緑の線は、濃い緑の背景（ダークテーマ）では見えにくいので、明るい丸いカードの上に置く */
+@media (prefers-color-scheme: dark) {
+  img.mascot[src$="smile.webp"] {
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #FBFDF6;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  }
+}
+
+/* 入力欄の文字は 16px 以上（iPhone は、それより小さいと、入力のときに画面を拡大する） */
+input, textarea, select {
+  font-size: max(16px, 1em);
+}
+
+/* ボタンやリンク、画像を長押ししたときに、文字の選択やメニュー（リンクを開く・画像を保存）が出ないようにする
+   （日記カードのプレビューの画像は、長押しで「写真に保存」できるように残す。diary.css） */
+a, button, label, [role="button"], [role="radio"], [role="tab"], .bottom-nav, .btn-icon {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+img, canvas, video {
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+}
+
+/* hidden 属性を付けた要素は、クラスで display を指定していても必ず隠す
+   （付けないと、写真から探す画面の「読み込み中…」が、開いたときから出たままになる） */
+[hidden] {
+  display: none !important;
+}
+
+body {
+  font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', 'M PLUS Rounded 1c', sans-serif;
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--text);
+  /* 温かみのある組み方: 行の間隔はゆったり、文字の間隔はほんの少し広く */
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ホーム画面に追加して開いたとき（ライト）: ステータスバーは背景の上に白い文字で重なるので、
+   上端だけ薄く暗くして読めるようにする */
+@media (display-mode: standalone) and (prefers-color-scheme: light) {
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: env(safe-area-inset-top, 0px);
+    background: linear-gradient(to bottom, rgba(23,51,31,0.45), rgba(23,51,31,0));
+    pointer-events: none;
+    z-index: 1000;
+  }
+}
+
+/* ────────────────────────────────────────────
+   共通ページ構造
+──────────────────────────────────────────── */
+/* 通常ページのルートコンテナ */
+.app {
+  width: 100%;
+  min-height: 100dvh;
+  position: relative;
+  /* hidden だとスクロールコンテナになり sticky が効かないため clip */
+  overflow-x: clip;
+  color: var(--text);
+  font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', 'M PLUS Rounded 1c', sans-serif;
+  background: var(--bg);
+}
+
+/* iPhone セーフエリア（ノッチ・ホームバー）対応パディング */
+.page-pad {
+  padding-top: var(--safe-top);
+  padding-left: max(24px, env(safe-area-inset-left));
+  padding-right: max(24px, env(safe-area-inset-right));
+  padding-bottom: 0;
+}
+
+/* ボトムナビがあるページ: ナビの高さ＋セーフエリア分の余白を確保 */
+.app--tabbar {
+  padding-bottom: var(--tabbar-space);
+}
+
+/* 下部にボタンがあるページ: ボタンを末尾に置き、画面下に貼り付ける */
+.app--actions {
+  display: flex;
+  flex-direction: column;
+}
+
+.bottom-actions {
+  position: static;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* ボタン同士の間（押し間違い防止） */
+  margin-top: auto;
+  padding-top: 16px;
+  padding-bottom: var(--safe-bottom);
+}
+
+/* Scan 画面: カメラ映像をフルスクリーンに */
+.app--scan {
+  background: #2D6B38;
+  overflow: hidden;
+  height: 100dvh;
+}
+
+/* ────────────────────────────────────────────
+   ライト/ダーク 表示切替
+   Mainのヒーローイラスト用（.on-light / .on-dark）
+──────────────────────────────────────────── */
+.on-dark { display: none; }
+
+@media (prefers-color-scheme: dark) {
+  .on-dark  { display: block; }
+  .on-light { display: none; }
+}
+
+/* ────────────────────────────────────────────
+   共通ボタン
+──────────────────────────────────────────── */
+/* プライマリボタン（グリーングラデーション） */
+/* .btn-large: 画面のいちばん大事なボタン（ホームの「スキャンを始める」など）。高さ 64px */
+.btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: var(--btn-primary-h);
+  border-radius: 32px;
+  color: var(--btn-text);
+  font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', 'M PLUS Rounded 1c', sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  background: var(--btn);
+  box-shadow: var(--btn-shadow);
+  text-decoration: none;
+  border: none;
+  width: 100%;
+  cursor: pointer;
+}
+
+.btn-large {
+  height: 64px;
+  border-radius: 32px;
+  font-size: 19px;
+}
+
+/* セカンダリボタン（サーフェスカード風） */
+.btn-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--btn-h);
+  border-radius: 28px;
+  color: var(--text);
+  font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', 'M PLUS Rounded 1c', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  text-decoration: none;
+  background: var(--surface);
+  border: 1px solid var(--surface-line);
+  box-shadow: var(--surface-shadow);
+  cursor: pointer;
+  width: 100%;
+}
+
+/* テキストリンクボタン（最下部の「あとで」など） */
+.btn-text-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--btn-h);
+  font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', 'M PLUS Rounded 1c', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
+  background: none;
+  border: 2px solid var(--hair);
+  cursor: pointer;
+  padding: 0 20px;
+  border-radius: 28px;
+}
+
+/* ガラスモーフィズムボタン（Scan 画面の透明ボタン） */
+.btn-glass {
+  width: var(--tap);
+  height: var(--tap);
+  border-radius: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--glass-text);
+  background: var(--glass);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: none;
+  text-decoration: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* 丸いサーフェスボタン（ヘッダーの設定・共有など） */
+.btn-icon {
+  width: var(--tap);
+  height: var(--tap);
+  border-radius: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--surface-line);
+  box-shadow: var(--surface-shadow);
+  text-decoration: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* ────────────────────────────────────────────
+   カード・サーフェス
+──────────────────────────────────────────── */
+.card-surface {
+  background: var(--surface);
+  border: 1px solid var(--surface-line);
+  box-shadow: var(--surface-shadow);
+}
+
+/* ────────────────────────────────────────────
+   ボトムナビゲーション
+──────────────────────────────────────────── */
+.bottom-nav {
+  position: fixed;
+  left: max(24px, env(safe-area-inset-left));
+  right: max(24px, env(safe-area-inset-right));
+  bottom: var(--tabbar-bottom);
+  height: var(--tabbar-h);
+  box-sizing: border-box;
+  padding: 0 10px;
+  border-radius: 38px;
+  display: flex;
+  align-items: center;
+  background: var(--nav);
+  border: 1px solid var(--nav-line);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: var(--nav-shadow);
+  z-index: 100;
+}
+
+.nav-item {
+  flex: 1;
+  align-self: stretch; /* ナビの高さいっぱいを押せる範囲にする */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: var(--tap);
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--nav-off);
+}
+
+.nav-item[aria-current="page"],
+.nav-item--active {
+  color: var(--nav-on);
+}
+
+.nav-item svg {
+  width: 28px;
+  height: 28px;
+}
+
+/* ナビ中央のカメラボタン（ノッチから浮き出る） */
+.nav-camera {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  box-sizing: border-box;
+  margin: -28px 12px 0;
+  border-radius: 32px;
+  border: 4px solid var(--notch);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--btn-text);
+  background: var(--btn);
+  box-shadow: 0 8px 20px rgba(31,122,56,0.40);
+  text-decoration: none;
+}
+
+/* ────────────────────────────────────────────
+   スキャン画面 - 検出カード（下から出てくる）
+──────────────────────────────────────────── */
+.found-card {
+  position: absolute;
+  left: max(24px, env(safe-area-inset-left));
+  right: max(24px, env(safe-area-inset-right));
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 140px);
+}
+
+.found-card-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 88px;
+  padding: 12px;
+  border-radius: 28px;
+  text-decoration: none;
+  color: var(--text);
+  background: var(--scan-card);
+  box-shadow: 0 18px 40px rgba(10,60,25,0.35);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.found-thumb {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #9BD083;
+}
+
+.found-title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.found-sub {
+  margin: 2px 0 0 0;
+  font-size: 16px;
+  color: var(--text2);
+}
+
+/* スライドアップアニメーション（検出カード表示時） */
+@keyframes slide-up {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+.slide-up {
+  animation: slide-up 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* ────────────────────────────────────────────
+   コレクション画面
+──────────────────────────────────────────── */
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* 記録カード */
+.record-card {
+  position: relative;
+  display: block;
+  height: 176px;
+  border-radius: 24px;
+  overflow: hidden;
+  text-decoration: none;
+  box-shadow: var(--surface-shadow);
+}
+
+.record-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.card-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 50%, rgba(10,42,18,0.65) 100%);
+}
+
+.card-date {
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+  color: #FFFFFF;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* 「次の一枚を探す」追加カード */
+.card-add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 176px;
+  border-radius: 24px;
+  border: 2px dashed var(--dash);
+  background: var(--surface);
+  box-shadow: none;
+  text-decoration: none;
+  color: var(--accent);
+  font-size: 17px;
+  font-weight: 700;
+}
+
+/* タブ切替 */
+.tabs {
+  display: flex;
+  gap: 12px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--surface-line);
+}
+
+.tab-btn {
+  flex: 1;
+  height: var(--btn-h);
+  border-radius: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', 'M PLUS Rounded 1c', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text2);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.tab-btn.tab-active {
+  background: var(--btn);
+  color: var(--btn-text);
+  font-weight: 700;
+}
+
+/* 切り替えが 3 つ（図鑑）: 文字の長さに合わせて幅を分ける（「今日のよつば」が 1 行に入るように） */
+.tabs--three {
+  gap: 4px;
+}
+.tabs--three .tab-btn {
+  flex: 1 1 auto;
+  padding: 0 10px;
+  white-space: nowrap;
+}
+@media (max-width: 359px) {
+  .tabs--three .tab-btn {
+    padding: 0 6px;
+    font-size: 16px;
+  }
+}
+
+/* 今日のよつばの一覧（図鑑の「今日のよつば」）: 1 行に、形（64×64）と日付 */
+.gacha-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.gacha-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-sizing: border-box;
+  min-height: 88px;
+  padding: 12px 16px 12px 12px;
+  border-radius: 24px;
+  color: var(--text);
+  text-decoration: none;
+}
+.gacha-row img {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  object-fit: contain;
+  background: var(--chip);
+}
+.gacha-row-date {
+  flex: 1;
+  font-family: 'Nunito', 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.month-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 20px 4px 10px;
+}
+
+.month-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.month-header span {
+  font-size: 16px;
+  color: var(--text2);
+}
+
+/* ────────────────────────────────────────────
+   ローディングオーバーレイ（写真の読み込み中）
+──────────────────────────────────────────── */
+.overlay-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(8px);
+}
+
+.loading-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 32px 40px;
+  border-radius: 28px;
+  background: var(--surface);
+  border: 1px solid var(--surface-line);
+  box-shadow: var(--surface-shadow);
+}
+
+.loading-card p {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* スピナーアニメーション */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--surface-line);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* ────────────────────────────────────────────
+   空状態（記録がないとき）
+──────────────────────────────────────────── */
+.empty-msg {
+  color: var(--text2);
+  font-size: 17px;
+  font-weight: 700;
+  text-align: center;
+  padding: 20px 0;
+  margin: 0;
+}
+
+/* ────────────────────────────────────────────
+   スタート画面（ホームの index.html の中にあり、アプリを開いたときだけ出す）
+   出すかどうかは index.html の <head> で決め、<html data-start> を付ける
+──────────────────────────────────────────── */
+.start-screen {
+  display: none;
+}
+
+html[data-start] .start-screen {
+  display: flex;
+}
+
+html[data-start] .home-screen,
+html[data-start] .bottom-nav {
+  display: none;
+}
+
+.start-screen {
+  position: relative;
+  overflow: hidden;
+}
+
+.start-body {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px 0;
+}
+
+.start-logo {
+  width: 216px;
+  height: 216px;
+  border-radius: 108px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, var(--glow) 0%, rgba(255,224,130,0) 70%), var(--surface);
+  border: 1px solid var(--surface-line);
+  box-shadow: var(--surface-shadow);
+}
+
+.start-title {
+  margin: 32px 0 0;
+  font-family: 'Nunito', system-ui, sans-serif;
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+}
+
+.start-lead {
+  margin: 16px 0 0;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1.55;
+  word-break: keep-all;
+}
+
+.start-screen .bottom-actions {
+  position: relative;
+}
+
+.start-btn {
+  height: 72px;
+  border-radius: 36px;
+  font-size: 24px;
+}
+
+/* 背景の動き（src/components/start-backdrop.ts）。transform と opacity だけを動かす */
+.start-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.start-bg-light {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,236,160,0.55) 0%, rgba(255,236,160,0) 70%);
+  animation: start-drift ease-in-out infinite alternate;
+}
+
+.start-bg-clover {
+  position: absolute;
+  fill: var(--mark);
+  stroke: var(--mark);
+  opacity: 0.16;
+  transform: rotate(var(--r));
+  transform-origin: 50% 90%;
+  animation: start-sway ease-in-out infinite alternate;
+}
+
+.start-bg-sparkle {
+  position: absolute;
+  fill: #F2B84B;
+  opacity: 0;
+  animation: start-twinkle ease-in-out infinite;
+}
+
+@keyframes start-drift {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(40px, -30px) scale(1.15); }
+}
+
+@keyframes start-sway {
+  from { transform: rotate(calc(var(--r) - 8deg)) translateY(0); }
+  to { transform: rotate(calc(var(--r) + 8deg)) translateY(-6px); }
+}
+
+@keyframes start-twinkle {
+  0%, 100% { opacity: 0; transform: scale(0.6); }
+  50% { opacity: 0.9; transform: scale(1); }
+}
+
+/* 画面が見えないあいだは止める */
+.start-bg--paused * {
+  animation-play-state: paused;
+}
+
+/* 「視差効果を減らす」がオンのときは動かさない（きらめきは、うすく出したまま） */
+@media (prefers-reduced-motion: reduce) {
+  .start-bg * {
+    animation: none;
+  }
+  .start-bg-sparkle {
+    opacity: 0.5;
+  }
+}
+
+/* ────────────────────────────────────────────
+   ホームの大きな画像（イラストと見つけた四つ葉の写真を切り替える）
+──────────────────────────────────────────── */
+.hero-media {
+  position: relative;
+  aspect-ratio: 350 / 200;
+  overflow: hidden;
+  touch-action: pan-y; /* 縦のスクロールはそのまま。横になぞる操作はアプリで使う */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* スライドは重ねて置き、表示中のものだけ見せる（0.6 秒でフェード） */
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  display: block;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+
+.hero-slide--active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.hero-slide svg {
+  width: 100%;
+  height: 100%;
+}
+
+.hero-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 画像の中央を、枠いっぱいに */
+  display: block;
+  -webkit-touch-callout: none;
+}
+
+/* ドットの列: 見た目は小さく、押せる範囲は高さ 48px・幅いっぱい */
+.hero-dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--tap);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.hero-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.65);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.35);
+  transition: width 0.3s, background 0.3s;
+  pointer-events: none;
+}
+
+.hero-dot--active {
+  width: 22px;
+  background: #FFFFFF;
+}
+
+/* ────────────────────────────────────────────
+   写真の上の四つ葉の枠（タップできる）と、下から出てくるシート
+──────────────────────────────────────────── */
+.leaf-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* 押せる範囲（48px 以上）。見た目の枠は ::after で、葉の大きさのまま描く */
+.leaf-box {
+  position: absolute;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+/* 四つ葉: 金色の太い枠（濃い縁取りつき。暗い写真でも明るい写真でも見える）＋ 四隅の印（::before）。src/lib/box-style.ts と同じ見た目 */
+.leaf-box::after {
+  content: '';
+  position: absolute;
+  inset: var(--ring-y, 0) var(--ring-x, 0);
+  border: 4px solid #F5C242;
+  border-radius: 8px;
+  box-shadow: 0 0 0 2px rgba(58,42,0,0.85), inset 0 0 0 1px rgba(58,42,0,0.6), 0 2px 10px rgba(0,0,0,0.35);
+}
+
+.leaf-box::before {
+  content: '';
+  position: absolute;
+  inset: calc(var(--ring-y, 0px) - 4px) calc(var(--ring-x, 0px) - 4px);
+  z-index: 1;
+  --c: #F5C242;
+  background:
+    linear-gradient(var(--c), var(--c)) top left / 18px 6px,
+    linear-gradient(var(--c), var(--c)) top left / 6px 18px,
+    linear-gradient(var(--c), var(--c)) top right / 18px 6px,
+    linear-gradient(var(--c), var(--c)) top right / 6px 18px,
+    linear-gradient(var(--c), var(--c)) bottom left / 18px 6px,
+    linear-gradient(var(--c), var(--c)) bottom left / 6px 18px,
+    linear-gradient(var(--c), var(--c)) bottom right / 18px 6px,
+    linear-gradient(var(--c), var(--c)) bottom right / 6px 18px;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 0 1px rgba(58,42,0,0.95)) drop-shadow(0 0 1px rgba(58,42,0,0.95));
+  pointer-events: none;
+}
+
+/* 四つ葉の候補（まだ確かめていない）: 点線の枠 */
+.leaf-box--candidate::after {
+  border-style: dashed;
+}
+
+.leaf-box:focus-visible::after {
+  outline: 3px solid #FFFFFF;
+  outline-offset: 2px;
+}
+
+/* 三つ葉: 細い白の枠（押せない・ラベルなし） */
+.leaf-three {
+  position: absolute;
+  border: 1.5px solid rgba(255,255,255,0.9);
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.3);
+  pointer-events: none;
+}
+
+/* 四つ葉の小さなラベル「四つ葉 ●●●」（白い背景のチップ。押せない） */
+.leaf-chip {
+  position: absolute;
+  z-index: 2;
+  padding: 2px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(58,42,0,0.6);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: #3A2A00;
+  background: #FFFFFF;
+  pointer-events: none;
+}
+
+
+/* 見逃した場所の印（仮の枠）。押せるものではない */
+.leaf-marker {
+  position: absolute;
+  border: 3px dashed #FFE48A;
+  border-radius: 10px;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.35);
+  pointer-events: none;
+}
+
+.leaf-marker span {
+  position: absolute;
+  left: -3px;
+  bottom: calc(100% + 4px);
+  padding: 2px 8px;
+  border-radius: 8px;
+  white-space: nowrap;
+  font-size: 16px;
+  font-weight: 700;
+  color: #3A2A00;
+  background: #FFE48A;
+}
+
+/* ひとことの入力欄（文字数つき。src/components/note-field.ts） */
+.note-field {
+  display: block;
+  margin-top: 16px;
+}
+
+.note-field-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text2);
+}
+
+.note-field-count {
+  font-family: 'Nunito', system-ui, sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.note-field input {
+  width: 100%;
+  min-height: var(--btn-h);
+  padding: 0 16px;
+  border-radius: 16px;
+  border: 2px solid var(--surface-line);
+  font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', 'M PLUS Rounded 1c', sans-serif;
+  font-size: 18px; /* 16px 以上（iPhone で入力時に拡大されないように） */
+  color: var(--text);
+  background: var(--field);
+}
+
+.note-field input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.note-field--over .note-field-count,
+.note-field-over {
+  color: var(--danger);
+  font-size: 16px;
+}
+
+.note-field--over input,
+.note-field--over input:focus {
+  border-color: var(--danger);
+}
+
+.note-field-over {
+  display: block;
+  margin-top: 6px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* 全画面で写真を見る・見逃した四つ葉に印をつける（src/components/photo-stage.ts） */
+.stage {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  color: #F2F8EE;
+  background: #0B1A10;
+  /* 枠を動かしている間に、ページが拡大・スクロールしないように（全画面で、スクロールするところはない） */
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* 説明の文: 画面の上の安全な余白の下に出す（写真や見出しに重ならない） */
+.stage-guide {
+  margin: 0;
+  padding: calc(env(safe-area-inset-top, 0px) + 14px) max(24px, env(safe-area-inset-right)) 14px max(24px, env(safe-area-inset-left));
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.stage-area {
+  position: relative;
+  overflow: hidden;
+  touch-action: none; /* ピンチ・ドラッグをアプリで受け取る */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.stage-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.stage-boxes {
+  position: absolute;
+  inset: 0;
+}
+
+.stage-found {
+  position: absolute;
+  border: 4px solid #F5C242;
+  border-radius: 8px;
+  box-shadow: 0 0 0 2px rgba(58,42,0,0.85);
+  pointer-events: none;
+}
+
+.stage-found--candidate {
+  border-style: dashed;
+}
+
+/* つけている仮の枠: ドラッグで動かす */
+.stage-box {
+  position: absolute;
+  border: 3px dashed #FFE48A;
+  border-radius: 8px;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.45);
+  cursor: move;
+}
+
+.stage-box-tag {
+  position: absolute;
+  left: -3px;
+  bottom: calc(100% + 6px);
+  padding: 2px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+  font-size: 16px;
+  font-weight: 700;
+  color: #3A2A00;
+  background: #FFE48A;
+  pointer-events: none;
+}
+
+/* 四隅のつまみ: 見た目は小さな丸、押せる範囲は 56px（--tap） */
+.stage-handle {
+  position: absolute;
+  width: var(--tap);
+  height: var(--tap);
+  margin: calc(var(--tap) / -2);
+  touch-action: none;
+}
+
+.stage-handle::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  margin: -9px;
+  border-radius: 9px;
+  background: #FFE48A;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.45);
+}
+
+.stage-handle--nw { left: 0; top: 0; cursor: nwse-resize; }
+.stage-handle--ne { left: 100%; top: 0; cursor: nesw-resize; }
+.stage-handle--sw { left: 0; top: 100%; cursor: nesw-resize; }
+.stage-handle--se { left: 100%; top: 100%; cursor: nwse-resize; }
+
+/* ルーペ: 指の少し上に出す拡大図 */
+.stage-loupe {
+  position: absolute;
+  border-radius: 50%;
+  border: 3px solid #FFFFFF;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  pointer-events: none;
+}
+
+.stage-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px max(24px, env(safe-area-inset-right)) calc(env(safe-area-inset-bottom, 0px) + 16px) max(24px, env(safe-area-inset-left));
+}
+
+.stage-actions-row {
+  display: flex;
+  gap: 12px;
+}
+
+.stage-actions-row > * {
+  flex: 1;
+}
+
+/* 枠が重なって決められないときの一覧（小さな切り抜き） */
+.stage-chooser {
+  position: absolute;
+  left: max(16px, env(safe-area-inset-left));
+  right: max(16px, env(safe-area-inset-right));
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+  z-index: 2;
+  padding: 16px;
+  border-radius: 24px;
+  color: var(--text);
+  background: var(--sheet);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+}
+
+.stage-chooser p {
+  margin: 0 0 12px;
+  font-size: 19px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.stage-chooser-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.stage-chooser-item {
+  width: 96px;
+  height: 96px;
+  padding: 0;
+  border: 3px solid #FFE48A;
+  border-radius: 16px;
+  overflow: hidden;
+  background: none;
+  cursor: pointer;
+}
+
+.stage-chooser-item canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* 短いお知らせ */
+.toast {
+  position: fixed;
+  left: max(24px, env(safe-area-inset-left));
+  right: max(24px, env(safe-area-inset-right));
+  top: calc(env(safe-area-inset-top, 0px) + 16px);
+  z-index: 500;
+  margin: 0;
+  padding: 14px 18px;
+  border-radius: 18px;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--accent);
+  background: var(--sheet);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+}
+
+.toast--thanks {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: left;
+}
+
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 450; /* 全画面の表示（.stage）の上に出す */
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(0,0,0,0.45);
+}
+
+.sheet {
+  width: 100%;
+  max-width: 520px;
+  max-height: 100dvh;
+  overflow-y: auto;
+  padding: 16px max(24px, env(safe-area-inset-left)) var(--safe-bottom) max(24px, env(safe-area-inset-right));
+  border-radius: 28px 28px 0 0;
+  color: var(--text);
+  background: var(--sheet);
+  box-shadow: 0 -12px 30px rgba(0,0,0,0.25);
+  animation: slide-up 0.3s ease-out;
+}
+
+.sheet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.sheet-head h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.sheet-zoom {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 20px;
+}
+
+.sheet-hint {
+  margin: 10px 0 0;
+  font-size: 17px;
+  color: var(--text2);
+  text-align: center;
+}
+
+.sheet-message {
+  margin: 12px 0 0;
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-size: 19px;
+  font-weight: 700;
+  text-align: center;
+  background: var(--field);
+}
+
+.sheet-message[data-tone='good'] {
+  color: var(--accent);
+  background: var(--chip);
+}
+
+.sheet-message[data-tone='caution'] {
+  color: var(--gold);
+  background: var(--lucky);
+}
+
+.sheet-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.sheet-actions button:disabled {
+  opacity: 0.6;
+}
+
+/* ────────────────────────────────────────────
+   最近の発見サムネイル（Main画面）
+──────────────────────────────────────────── */
+.recent-thumb {
+  position: relative;
+  display: block;
+  flex: 1;
+  height: 100px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 18px rgba(20,60,30,0.28);
+  text-decoration: none;
+}
+
+.recent-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.date-chip {
+  position: absolute;
+  left: 8px;
+  bottom: 7px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.92);
+  font-family: 'Nunito', system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #2F4A35;
+}
+
+/* ────────────────────────────────────────────
+   特徴カード（Permission 画面など）
+──────────────────────────────────────────── */
+.feature-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+  min-height: 60px;
+  padding: 8px 14px;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 1px solid var(--surface-line);
+  box-shadow: var(--surface-shadow);
+}
+
+.feature-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--accent);
+  background: var(--chip);
+}
+
+/* ────────────────────────────────────────────
+   Detail 画面のシート
+──────────────────────────────────────────── */
+/* 写真に 40px 重ねて、残りの高さを埋める。内容が多ければページごとスクロール */
+.detail-sheet {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-top: -40px;
+  box-sizing: border-box;
+  padding: 26px max(24px, env(safe-area-inset-right)) 0 max(24px, env(safe-area-inset-left));
+  border-radius: 32px 32px 0 0;
+  background: var(--sheet);
+  box-shadow: 0 -12px 30px rgba(20,60,30,0.18);
+}
+
+.detail-sheet .bottom-actions {
+  background: var(--sheet);
+}
+
+/* Nunito フォントを使う要素（数字・英字） */
+.font-nunito {
+  font-family: 'Nunito', system-ui, sans-serif;
+}
+
+/* ────────────────────────────────────────────
+   レベル・経験値・バッジ（src/lib/progress.ts）
+──────────────────────────────────────────── */
+.level-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-sizing: border-box;
+  min-height: 96px;
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: 24px;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.level-card--big {
+  margin-top: 18px;
+  padding: 18px;
+}
+
+.level-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.level-lv {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.level-rank {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.level-more {
+  margin-left: auto;
+  align-self: center;
+  color: var(--text2);
+}
+
+.level-bar {
+  display: block;
+  height: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--chip);
+}
+
+.level-bar-fill {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: 6px;
+  background: var(--accent);
+  transition: width 0.6s ease;
+}
+
+.level-next {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text2);
+}
+
+/* 結果の画面の「けいけんち ＋142」 */
+.xp-text {
+  margin: 6px 0 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* レベルアップ */
+.levelup-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0,0,0,0.45);
+}
+
+.levelup {
+  width: min(100%, 360px);
+  padding: 24px 20px 20px;
+  border-radius: 28px;
+  text-align: center;
+  background: var(--sheet);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+  animation: levelup-pop 0.35s ease-out;
+}
+
+.levelup .btn-primary {
+  width: 100%;
+  margin-top: 16px;
+}
+
+.levelup-title {
+  margin: 8px 0 0;
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.levelup-level {
+  margin: 6px 0 0;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+@keyframes levelup-pop {
+  from { transform: scale(0.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.confetti {
+  position: fixed;
+  inset: 0;
+  z-index: 650;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.toast--badge {
+  z-index: 700;
+}
+
+/* きろくの画面 */
+.kiroku-stats {
+  display: flex;
+  flex-direction: column;
+  margin-top: 14px;
+  padding: 6px 18px;
+  border-radius: 24px;
+}
+
+.kiroku-stat {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 12px 0;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.kiroku-stat + .kiroku-stat {
+  border-top: 1px solid var(--hair);
+}
+
+.kiroku-stat-num {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.kiroku-note,
+.kiroku-sub {
+  margin: 10px 0 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text2);
+}
+
+.badge-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 64px;
+  padding: 10px 14px;
+  border-radius: 20px;
+  background: var(--surface);
+  border: 1px solid var(--surface-line);
+}
+
+.badge-ring {
+  fill: var(--chip);
+  stroke: var(--gold);
+  stroke-width: 4;
+}
+
+.badge--locked {
+  opacity: 0.45;
+}
+
+.badge--locked .badge-icon {
+  filter: grayscale(1);
+}
+
+.badge-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.badge-name {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.badge-sub {
+  font-size: 16px;
+  color: var(--text2);
+}
+
+.btn-text-link--armed {
+  border-color: var(--danger);
+  font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .level-bar-fill { transition: none; }
+  .levelup { animation: none; }
+}
+
+/* 図鑑の詳細: 手書きのある日記カードの、小さな見本 */
+.ink-card-thumb {
+  display: block;
+  width: 168px;
+  margin: 12px auto 0;
+  padding: 0;
+  border: 1px solid var(--surface-line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: var(--surface-shadow);
+  cursor: pointer;
+}
+
+.ink-card-thumb img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1080 / 1350;
+}
+
+/* 設定: 保存のしかた */
+.save-mode {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.save-mode-option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-height: 64px;
+  padding: 10px 16px;
+  border-radius: 20px;
+  font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', 'M PLUS Rounded 1c', sans-serif;
+  text-align: left;
+  color: var(--text);
+  background: var(--surface);
+  border: 2px solid var(--surface-line);
+  cursor: pointer;
+}
+
+.save-mode-option[aria-checked='true'] {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent) inset;
+}
+
+.save-mode-name {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.save-mode-sub {
+  font-size: 16px;
+  color: var(--text2);
+}
+
+/* 確認のポップアップ（src/components/four-confirm.ts）: 画面の真ん中に大きく（横 92%・高さは最大 90%） */
+.confirm-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 550;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.55);
+}
+
+.confirm {
+  width: 92vw;
+  max-width: 560px;
+  max-height: 90dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  box-sizing: border-box;
+  padding: 16px 16px 20px;
+  border-radius: 28px;
+  color: var(--text);
+  /* ポップアップの中は、場所がせまいので、行の間隔を少しつめる（ボタンが画面の外に出ないように） */
+  line-height: 1.5;
+  background: var(--sheet);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+  animation: confirm-in 0.2s ease-out;
+}
+
+@keyframes confirm-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* 見出しの左に、キャラクター（surprised）。× のボタンとは、重ならない */
+.confirm-head-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* ことばの途中で折り返さない（空白のところでだけ折り返す） */
+.confirm-title {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.confirm-lead {
+  margin: 4px 0 0;
+  font-size: 17px;
+  color: var(--text2);
+}
+
+.confirm-photo {
+  position: relative;
+  margin-top: 12px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #0B1A10;
+  touch-action: pan-y; /* 縦のスクロールはそのまま。左右になぞると、まえ・つぎへ */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.confirm-photo canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+.confirm-count {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 17px;
+  font-weight: 800;
+  color: #FFFFFF;
+  background: rgba(0,0,0,0.55);
+}
+
+.confirm-state {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #2F4A35;
+  background: #CFFF7A;
+}
+
+.confirm-state--skip {
+  color: #FFFFFF;
+  background: rgba(0,0,0,0.6);
+}
+
+.confirm-guide {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 0 0;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.confirm-dots {
+  font-size: 20px;
+  letter-spacing: 2px;
+  color: var(--accent);
+}
+
+.confirm-note {
+  margin: 2px 0 0;
+  font-size: 16px;
+  color: var(--text2);
+}
+
+.confirm-choice {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.confirm-nav {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.confirm-nav .btn-text-link {
+  flex: 1;
+}
+
+.confirm-nav .btn-text-link:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* ぜんぶ入れない: 上のほうに、枠線だけの控えめなボタン（押せる範囲は 56px） */
+.confirm-skip-all {
+  display: block;
+  min-width: 160px;
+  min-height: 56px;
+  margin: 12px 0 0 auto;
+  padding: 0 20px;
+  border-radius: 28px;
+  font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', 'M PLUS Rounded 1c', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text2);
+  background: none;
+  border: 2px solid var(--hair);
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confirm { animation: none; }
+}
+
+/* 「今日のよつば」（gacha.html・src/pages/gacha.ts）。デザインのキャンバス「今日のよつば イメージ」に合わせた */
+.gacha-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.gacha-head-space {
+  width: var(--tap);
+  flex-shrink: 0;
+}
+
+.gacha-title {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
+.gacha-date {
+  margin: 8px 0 0;
+  font-size: 16px;
+  text-align: center;
+  color: var(--text2);
+}
+
+.gacha-section {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.gacha-section[hidden] {
+  display: none;
+}
+
+/* 形をのせる四角（絵の背景は、絵の中で塗る。ダークでも同じ見た目） */
+.gacha-stage {
+  width: min(100%, 342px);
+  aspect-ratio: 1;
+  margin: 16px auto 0;
+  border-radius: 28px;
+  overflow: hidden;
+  background: #EDE6D0;
+  box-shadow: 0 8px 20px rgba(47, 74, 53, 0.2);
+}
+
+.gacha-stage-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  box-sizing: border-box;
+  border: 2px dashed #B7AE8F;
+  box-shadow: none;
+  color: #4A4A3A;
+}
+
+.gacha-silhouette {
+  width: 58%;
+  height: auto;
+  fill: #D7CFB1;
+}
+
+.gacha-empty-text {
+  margin: 0;
+  font-size: 16px;
+}
+
+.gacha-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.gacha-note {
+  margin: 14px 0 0;
+  font-size: 16px;
+  color: var(--text2);
+}
+
+.gacha-action {
+  margin-top: 16px;
+}
+
+/* つくっている間 */
+.gacha-progress {
+  width: min(100%, 342px);
+  margin: 16px auto 0;
+}
+
+.gacha-progress-label {
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.gacha-bar {
+  height: 10px;
+  border-radius: 5px;
+  background: var(--chip);
+  overflow: hidden;
+}
+
+.gacha-bar-fill {
+  width: 0;
+  height: 100%;
+  border-radius: 5px;
+  background: var(--accent);
+  transition: width 0.4s ease;
+}
+
+/* モデルを読み込んでいる間（まだ途中の形が無い）: 短い帯が、行ったり来たりする */
+.gacha-bar-fill.is-waiting {
+  width: 30% !important;
+  animation: gacha-wait 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes gacha-wait {
+  from { transform: translateX(-10%); }
+  to { transform: translateX(240%); }
+}
+
+.gacha-steps {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.gacha-step {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  opacity: 0.35;
+  transition: opacity 0.3s ease;
+}
+
+.gacha-step.is-on {
+  opacity: 1;
+}
+
+/* 結果: 見た目の切り替え */
+.gacha-styles {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.gacha-style {
+  min-width: 96px;
+  min-height: 48px;
+  padding: 0 14px;
+  border-radius: 24px;
+  border: 2px solid var(--hair);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.gacha-style[aria-pressed="true"] {
+  border-color: transparent;
+  background: var(--btn);
+  color: var(--btn-text);
+}
+
+.gacha-saved {
+  margin: 16px 0 0;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gacha-bar-fill, .gacha-step { transition: none; }
+  .gacha-bar-fill.is-waiting { animation: none; }
+}
+
+/* 確認のポップアップの中の形（src/components/gacha-confirm.ts） */
+.gacha-confirm-img {
+  margin-top: 12px;
+  padding: 16px;
+  border-radius: 16px;
+  background: #F6FAEE;
+}
+
+.gacha-confirm-img img {
+  display: block;
+  width: min(100%, 320px);
+  height: auto;
+  margin: 0 auto;
+}
+
+/* ホームの「今日のよつば」のボタン（index.html） */
+.gacha-entry {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+  min-height: 64px;
+  margin-top: 12px;
+  padding: 10px 16px 10px 12px;
+  border-radius: 24px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.gacha-entry-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  background: var(--chip);
+}
+
+.gacha-entry-text {
+  flex: 1;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* 「今日のよつば」の準備ができた印（緑の点。文字は出さない。押せる範囲は、行全体） */
+.gacha-ready {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--chip);
+}
+.gacha-ready[hidden] {
+  display: none;
+}
+
+/* 「このアプリについて」（about.html）: 開くと全文が出る欄 */
+.about-details {
+  margin-top: 10px;
+}
+.about-details summary {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+.about-text {
+  margin: 4px 0 0;
+  max-height: 60vh;
+  overflow: auto;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--hair);
+  font-family: Menlo, Consolas, monospace;
+  font-size: 16px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.about-parts {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.about-parts li + li {
+  border-top: 1px solid var(--hair);
+}

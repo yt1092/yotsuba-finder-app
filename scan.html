@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#2D6B38">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/src/styles/global.css">
+  <title>スキャン中 - YOTSUBA FINDER</title>
+</head>
+<body>
+<!-- Scan 画面はカメラ映像がフルスクリーン -->
+<div class="app app--scan">
+
+  <!-- カメラ映像（背面カメラ） -->
+  <video id="video" playsinline muted autoplay
+    style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;"></video>
+
+  <!-- 検出枠・ラベルを描画する canvas -->
+  <canvas id="overlay"
+    style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;"></canvas>
+
+  <!-- 上部バー（ガラスモーフィズム） -->
+  <div id="scanTop" style="position:absolute;top:var(--safe-top);left:max(24px,env(safe-area-inset-left));right:max(24px,env(safe-area-inset-right));display:flex;align-items:center;justify-content:space-between;">
+    <a href="index.html" aria-label="ホームに戻る" class="btn-glass">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+    </a>
+    <!-- スキャン中の表示。押すと、一時停止・再開（src/pages/scan.ts）。90 秒、動きがないと、自動でお休み -->
+    <button type="button" id="scanToggle" class="scan-status" aria-pressed="false" style="display:flex;align-items:center;gap:8px;min-height:48px;padding:0 16px;border:none;border-radius:24px;font:inherit;font-size:16px;white-space:nowrap;font-weight:700;color:var(--glass-text);background:var(--glass);box-shadow:var(--glass-shadow);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);cursor:pointer;">
+      <span id="scanDot" class="scan-dot" aria-hidden="true"></span>
+      <span id="scanStatus">自動で探しています</span>
+    </button>
+    <!-- フラッシュ（ライトON/OFF）ボタン -->
+    <button type="button" id="flashBtn" aria-label="ライトを点ける" class="btn-glass">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3L5 14h6l-1 7 8-11h-6z"/></svg>
+    </button>
+  </div>
+
+  <!-- 枠の見方（凡例）。初めて見たあとは、小さくする（src/pages/scan.ts）。押せるものではない -->
+  <div id="scanLegend" class="scan-legend" aria-hidden="true">
+    <span class="scan-legend-item"><span class="scan-legend-four"></span>四つ葉の こうほ</span>
+    <span class="scan-legend-item"><span class="scan-legend-three"></span>三つ葉</span>
+  </div>
+
+  <!-- 検出カード（四つ葉を見つけたら表示される） -->
+  <div id="foundCard" hidden class="found-card">
+    <a href="found.html" class="found-card-inner">
+      <img id="foundThumb" src="" alt="検出画像" class="found-thumb">
+      <div style="flex:1;min-width:0;">
+        <p class="found-title">四つ葉を見つけました！</p>
+        <p class="found-sub">図鑑に入れました</p>
+      </div>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;color:var(--text2);"><path d="M9 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+
+  <!-- カメラが使えないとき・止まったとき（許可されていない・ほかのアプリが使っている・画面を離れて止まった など） -->
+  <div id="cameraHelp" hidden class="camera-help" role="alertdialog" aria-labelledby="cameraHelpTitle">
+    <h2 id="cameraHelpTitle" class="camera-help-title">カメラが 止まっています</h2>
+    <p id="cameraHelpText" class="camera-help-text"></p>
+    <button type="button" id="cameraRetry" class="btn-primary">カメラを つかう</button>
+    <a href="settings.html#camera" class="btn-text-link" style="margin-top:8px;">何度も きかれるときは</a>
+  </div>
+
+  <!-- 下部ボタン行 -->
+  <div id="scanBottom" style="position:absolute;left:max(24px,env(safe-area-inset-left));right:max(24px,env(safe-area-inset-right));bottom:var(--safe-bottom);display:flex;align-items:center;justify-content:space-between;">
+    <!-- 写真から探す -->
+    <a href="photo-pick.html" style="width:104px;white-space:nowrap;display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:#FFFFFF;font-size:16px;font-weight:700;text-shadow:0 1px 4px rgba(0,0,0,0.55);">
+      <span class="btn-glass" style="width:56px;height:56px;border-radius:28px;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="M4 17l5-4.5 3.5 3L15 13l5 4.5"/></svg>
+      </span>
+      写真から探す
+    </a>
+    <!-- 図鑑 -->
+    <a href="collection.html" aria-label="図鑑を開く" style="width:104px;white-space:nowrap;display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:#FFFFFF;font-size:16px;font-weight:700;text-shadow:0 1px 4px rgba(0,0,0,0.55);">
+      <span class="btn-glass" style="position:relative;width:56px;height:56px;border-radius:28px;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>
+        <span id="collectionBadge" style="position:absolute;right:-2px;top:-2px;min-width:22px;height:22px;box-sizing:border-box;padding:0 6px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:#FFD66B;color:#3A2A00;font-family:'Nunito',system-ui,sans-serif;font-size:16px;font-weight:800;"></span>
+      </span>
+      図鑑
+    </a>
+  </div>
+
+</div>
+<script type="module" src="/src/pages/scan.ts"></script>
+</body>
+</html>

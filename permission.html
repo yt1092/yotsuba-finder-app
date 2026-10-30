@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#EEF6E2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#07140D" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/src/styles/global.css">
+  <title>カメラの許可 - YOTSUBA FINDER</title>
+</head>
+<body>
+<div class="app page-pad app--actions">
+
+  <!-- 戻るボタン -->
+  <a href="index.html" aria-label="ホームに戻る" class="btn-icon">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+  </a>
+
+  <!-- ファインダーイラスト -->
+  <div style="display:flex;justify-content:center;margin-top:18px;">
+    <svg width="200" height="200" viewBox="0 0 240 240" role="img" aria-label="ファインダーの中に光る四つ葉と、スキャンの光の線" style="display:block;">
+      <defs>
+        <linearGradient id="pSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF6CF"/><stop offset="1" stop-color="#9BD083"/></linearGradient>
+        <linearGradient id="pScan" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0"/><stop offset="0.5" stop-color="#FFFFFF"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient>
+      </defs>
+      <circle cx="120" cy="120" r="116" fill="rgba(143,234,92,0.20)"/>
+      <rect x="30" y="20" width="180" height="200" rx="40" fill="url(#pSky)" stroke="rgba(255,255,255,0.95)" stroke-width="3"/>
+      <path d="M30 170 C70 150 110 168 150 160 S200 156 210 160 V180 a40 40 0 0 1-40 40 H70 a40 40 0 0 1-40-40 Z" fill="#6DB862"/>
+      <path d="M52 76 V64 Q52 44 72 44 H84" fill="none" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round"/>
+      <path d="M156 44 H168 Q188 44 188 64 V76" fill="none" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round"/>
+      <path d="M188 164 V176 Q188 196 168 196 H156" fill="none" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round"/>
+      <path d="M84 196 H72 Q52 196 52 176 V164" fill="none" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round"/>
+      <g style="filter:drop-shadow(0 8px 10px rgba(20,80,35,0.4))"><use href="#cH" transform="translate(120 118) rotate(8) scale(1.5)"/></g>
+      <rect x="48" y="150" width="144" height="3" rx="1.5" fill="url(#pScan)"/>
+    </svg>
+  </div>
+
+  <h1 style="margin:22px 0 0;text-align:center;font-size:30px;line-height:1.3;font-weight:700;">カメラを使って<br>四つ葉を探します</h1>
+  <p style="margin:10px 0 0;text-align:center;font-size:17px;line-height:1.7;color:var(--text2);">映像は端末の中だけで処理されます。<br>外部へ送信されることはありません。</p>
+
+  <!-- 特徴カード -->
+  <div style="display:flex;flex-direction:column;gap:8px;margin-top:20px;">
+    <div class="feature-card">
+      <span class="feature-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg>
+      </span>
+      <span>
+        <span style="display:block;font-size:17px;font-weight:700;line-height:1.3;">端末の中で処理</span>
+        <span style="display:block;font-size:16px;color:var(--text2);line-height:1.3;">映像はサーバーに送られません</span>
+      </span>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3L5 14h6l-1 7 8-11h-6z"/></svg>
+      </span>
+      <span>
+        <span style="display:block;font-size:17px;font-weight:700;line-height:1.3;">向けるだけで自動検出</span>
+        <span style="display:block;font-size:16px;color:var(--text2);line-height:1.3;">見つけたら自動で図鑑に保存</span>
+      </span>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
+      </span>
+      <span>
+        <span style="display:block;font-size:17px;font-weight:700;line-height:1.3;">許可はあとから変更できます</span>
+        <span style="display:block;font-size:16px;color:var(--text2);line-height:1.3;">iPhoneの「設定」からいつでも</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- エラーメッセージ（許可拒否時に表示） -->
+  <p id="permError" hidden style="margin:12px 0 0;text-align:center;font-size:16px;color:var(--danger);">
+    カメラが許可されませんでした。iPhoneの「設定」→「Safari」→「カメラ」から許可してください。
+  </p>
+
+  <!-- ボタン -->
+  <div class="bottom-actions">
+    <button id="allowBtn" class="btn-primary">カメラを許可する</button>
+    <a href="index.html" class="btn-text-link">あとで</a>
+  </div>
+
+</div>
+<script type="module" src="/src/pages/permission.ts"></script>
+</body>
+</html>

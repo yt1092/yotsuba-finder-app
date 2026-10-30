@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#EEF6E2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#07140D" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/src/styles/global.css">
+  <title>写真から探す - YOTSUBA FINDER</title>
+</head>
+<body>
+<div class="app page-pad app--actions">
+
+  <!-- 戻るボタン -->
+  <a href="index.html" aria-label="ホームに戻る" class="btn-icon">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+  </a>
+
+  <h1 style="margin:18px 0 0;font-size:34px;line-height:1.2;font-weight:700;">写真から探す</h1>
+  <p style="margin:6px 0 0;font-size:17px;color:var(--text2);">選ぶだけで、四つ葉を自動で探します。</p>
+
+  <!-- カメラが続けて止まったので、ここに切り替えたときの理由（src/pages/photo-pick.ts。src/lib/diag.ts の PHOTO_FALLBACK_TEXT） -->
+  <p id="cameraFallback" role="status" hidden style="margin:14px 0 0;padding:12px 16px;border-radius:20px;font-size:17px;line-height:1.7;font-weight:700;background:var(--lucky);color:#3B2F00;"></p>
+
+  <!-- 隠しファイル入力（ボタンからトリガーする） -->
+  <input type="file" id="fileInput" accept="image/*" style="display:none;" aria-hidden="true">
+
+  <!-- ドロップゾーン -->
+  <div id="dropZone" style="display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;height:250px;margin-top:22px;border-radius:32px;text-align:center;background:var(--surface);border:2px dashed var(--dash);cursor:pointer;">
+    <svg width="150" height="116" viewBox="0 0 150 116" aria-hidden="true" style="display:block;">
+      <g transform="rotate(-9 60 60)"><rect x="14" y="20" width="84" height="64" rx="12" fill="#B6DE9B" stroke="#FFFFFF" stroke-width="3"/></g>
+      <g transform="rotate(7 90 50)">
+        <rect x="44" y="14" width="92" height="72" rx="12" fill="#9BD083" stroke="#FFFFFF" stroke-width="3"/>
+        <use href="#c3" fill="#6FB95E" transform="translate(58 70) rotate(20) scale(0.5)"/>
+        <use href="#c3" fill="#5FAE55" transform="translate(124 72) rotate(-20) scale(0.45)"/>
+        <use href="#cH" transform="translate(92 48) rotate(8) scale(0.75)"/>
+      </g>
+      <circle cx="44" cy="80" r="18" fill="rgba(255,255,255,0.35)" stroke="#F2B84B" stroke-width="5"/>
+      <path d="M57 93 L70 106" stroke="#F2B84B" stroke-width="6" stroke-linecap="round"/>
+    </svg>
+    <div style="margin-top:14px;font-size:20px;font-weight:700;">写真を選んでください</div>
+    <div style="margin-top:4px;font-size:16px;color:var(--text2);">1枚選ぶと、すぐに調べます</div>
+  </div>
+
+  <!-- うまく見つけるコツ -->
+  <div style="margin-top:16px;padding:14px 16px 6px;border-radius:24px;" class="card-surface">
+    <h2 style="margin:0 0 4px;font-size:24px;font-weight:700;">うまく見つけるコツ</h2>
+    <div style="display:flex;align-items:center;gap:12px;height:44px;">
+      <span style="width:32px;height:32px;border-radius:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--accent);background:var(--chip);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4M11 8.5v5M8.5 11h5"/></svg>
+      </span>
+      <span style="font-size:17px;">葉をできるだけ大きく写す</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;height:44px;border-top:1px solid var(--hair);">
+      <span style="width:32px;height:32px;border-radius:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--accent);background:var(--chip);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V6a2 2 0 0 1 2-2h3M15 4h3a2 2 0 0 1 2 2v3M20 15v3a2 2 0 0 1-2 2h-3M9 20H6a2 2 0 0 1-2-2v-3"/><circle cx="12" cy="12" r="2.5"/></svg>
+      </span>
+      <span style="font-size:17px;">ピントを合わせる</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;height:44px;border-top:1px solid var(--hair);">
+      <span style="width:32px;height:32px;border-radius:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--accent);background:var(--chip);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4"/></svg>
+      </span>
+      <span style="font-size:17px;">明るい場所で撮る</span>
+    </div>
+  </div>
+
+  <!-- エラーメッセージ（写真を調べられなかったときに表示） -->
+  <p id="pickError" hidden style="margin:12px 0 0;text-align:center;font-size:16px;color:var(--danger);">
+    写真を調べられませんでした。もう一度お試しください。
+  </p>
+
+  <!-- ボタン -->
+  <div class="bottom-actions">
+    <button id="pickBtn" class="btn-primary">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="M4 17l5-4.5 3.5 3L15 13l5 4.5"/></svg>
+      写真を選ぶ
+    </button>
+    <a href="scan.html" class="btn-text-link">カメラで探す</a>
+  </div>
+
+  <!-- ローディングオーバーレイ（読み込み中） -->
+  <div id="analyzing" hidden class="overlay-loading">
+    <div class="loading-card">
+      <img class="mascot mascot-center" src="/images/mascot/thinking.webp" alt="" aria-hidden="true" width="61" height="64">
+      <div class="spinner"></div>
+      <p id="analyzingText" role="status">読み込み中…</p>
+    </div>
+  </div>
+
+</div>
+<script type="module" src="/src/pages/photo-pick.ts"></script>
+</body>
+</html>

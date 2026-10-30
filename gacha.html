@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#EEF6E2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#07140D" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/src/styles/global.css">
+  <title>今日のよつば - YOTSUBA FINDER</title>
+</head>
+<body>
+<!--
+  「今日のよつば」（src/pages/gacha.ts）。デザインのキャンバス「今日のよつば イメージ」の画面に合わせた
+    1. ひく前 → 2. つくっている間（途中の 4 つの形を、約 2 秒で順に見せる）→ 3. 結果（切り絵・押し花・ドット絵）
+    → 4. 図鑑に入れる（確認のポップアップ。日記カードは、図鑑の詳細から作る）
+  形は、この端末の中の小さなモデル（DiT）が作る（種は、日付と端末ごとの値から決まる）。モデルが無ければ、その場で取る（準備しています）。
+  作れないときは、あらかじめ作った 60 枚から、種で 1 枚（説明の 1 行は出さない）
+-->
+<div class="app page-pad">
+
+  <div class="gacha-head">
+    <a href="index.html" aria-label="ホームに戻る" class="btn-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+    </a>
+    <h1 class="gacha-title">今日のよつば</h1>
+    <span class="gacha-head-space" aria-hidden="true"></span>
+  </div>
+  <p id="gachaDate" class="gacha-date"></p>
+
+  <!-- 1. ひく前 -->
+  <section id="gachaBefore" class="gacha-section" hidden>
+    <div class="gacha-stage gacha-stage-empty">
+      <svg class="gacha-silhouette" viewBox="-42 -42 84 84" aria-hidden="true">
+        <use href="#lf"/><use href="#lf" transform="rotate(90)"/><use href="#lf" transform="rotate(180)"/><use href="#lf" transform="rotate(270)"/>
+      </svg>
+      <p class="gacha-empty-text">まだ ひいていません</p>
+    </div>
+    <button type="button" id="gachaDraw" class="btn-primary gacha-action">今日のよつばを ひく</button>
+    <p class="gacha-note">1日に1回、ひけます。</p>
+  </section>
+
+  <!-- 2. つくっている間 -->
+  <section id="gachaMaking" class="gacha-section" hidden>
+    <div class="gacha-stage"><canvas id="gachaStepBig" class="gacha-canvas" aria-hidden="true"></canvas></div>
+    <div class="gacha-progress">
+      <p id="gachaStage" class="gacha-progress-label" role="status">つくっています</p>
+      <div class="gacha-bar"><div id="gachaBar" class="gacha-bar-fill"></div></div>
+    </div>
+    <p class="gacha-note">ノイズから、少しずつ、形に近づけています。</p>
+    <div class="gacha-steps" aria-hidden="true">
+      <canvas class="gacha-step"></canvas><canvas class="gacha-step"></canvas>
+      <canvas class="gacha-step"></canvas><canvas class="gacha-step"></canvas>
+    </div>
+    <button type="button" id="gachaBusy" class="btn-primary gacha-action" disabled>つくっています…</button>
+  </section>
+
+  <!-- 3. 結果 -->
+  <section id="gachaResult" class="gacha-section" hidden>
+    <div class="gacha-stage gacha-stage-art"><canvas id="gachaArt" class="gacha-canvas" role="img" aria-label=""></canvas></div>
+    <div class="gacha-styles" role="group" aria-label="見た目">
+      <button type="button" class="gacha-style" data-style="cut" aria-pressed="true">切り絵</button>
+      <button type="button" class="gacha-style" data-style="press" aria-pressed="false">押し花</button>
+      <button type="button" class="gacha-style" data-style="pixel" aria-pressed="false">ドット絵</button>
+    </div>
+    <p id="gachaNote" class="gacha-note"></p>
+    <!-- 4. 図鑑に入れる（確認のポップアップ。src/components/gacha-confirm.ts） -->
+    <button type="button" id="gachaSave" class="btn-primary gacha-action">図鑑に入れる</button>
+    <p id="gachaSaved" class="gacha-saved" hidden role="status">図鑑に入れました</p>
+    <a id="gachaOpen" href="collection.html" class="btn-secondary gacha-action" hidden>図鑑で見る</a>
+  </section>
+
+</div>
+
+<script type="module" src="/src/pages/gacha.ts"></script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#EEF6E2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#07140D" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/src/styles/global.css">
+  <title>写真：見つかった - YOTSUBA FINDER</title>
+  <style>
+    /* PhotoFound 用の追加 CSS 変数 */
+    .photo-frame { background: var(--gold-frame); }
+  </style>
+</head>
+<body>
+<div class="app page-pad app--actions">
+
+  <!-- 背景グロー -->
+  <div style="position:absolute;left:50%;top:150px;width:380px;height:380px;margin-left:-190px;border-radius:50%;background:radial-gradient(circle,var(--glow) 0%,rgba(255,205,90,0) 70%);pointer-events:none;"></div>
+
+  <!-- ヘッダー -->
+  <div style="position:relative;display:flex;align-items:center;justify-content:space-between;">
+    <a href="photo-pick.html" aria-label="戻る" class="btn-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+    </a>
+    <button id="shareBtn" aria-label="共有" class="btn-icon" style="padding:0;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M7.5 7.5L12 3l4.5 4.5M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>
+    </button>
+  </div>
+
+  <!-- 写真（金縁グラデーション枠） -->
+  <div style="position:relative;margin-top:18px;padding:4px;border-radius:32px;background:var(--gold-frame);box-shadow:0 16px 40px rgba(60,100,40,0.25);">
+    <div style="border-radius:28px;overflow:hidden;aspect-ratio:1.06;background:#9BD083;">
+      <img id="foundImg" src="" alt="写真の中の四つ葉" style="width:100%;height:100%;object-fit:cover;display:block;">
+    </div>
+  </div>
+
+  <!-- まちがいの報告: 見逃した四つ葉の場所を教える（目立たない文字のボタン。押したあと、写真をタップ） -->
+  <button type="button" id="missedBtn" class="btn-text-link" hidden style="width:100%;margin-top:12px;">四つ葉を見逃している</button>
+
+  <!-- 結果テキスト -->
+  <div style="position:relative;text-align:center;margin-top:22px;">
+    <!-- 見出しと、その下の文（結果の状態ごとに、src/lib/result-text.ts で決める） -->
+    <!-- キャラクター（図鑑に入れた = happy・四つ葉がなかった = smile。src/lib/result-text.ts） -->
+    <img id="resultMascot" class="mascot mascot-center" hidden alt="" aria-hidden="true">
+    <h1 id="resultTitle" style="margin:0;font-size:28px;line-height:1.25;font-weight:700;word-break:keep-all;overflow-wrap:anywhere;"></h1>
+    <p id="resultLead" hidden style="margin:8px 0 0;font-size:18px;font-weight:700;line-height:1.5;"></p>
+    <p id="leafCountText" style="margin:8px 0 0;font-size:18px;font-weight:700;line-height:1.5;"></p>
+    <!-- 経験値（今回の写真で入った点。同じ写真の 2 回目は出さない。src/components/progress-notice.ts） -->
+    <p id="xpText" class="xp-text" hidden></p>
+  </div>
+
+  <!-- ボタン -->
+  <div class="bottom-actions">
+    <!-- 日記カードを作る（記録が読めたら出す） -->
+    <button type="button" id="diaryBtn" class="btn-secondary" hidden><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4h10a2 2 0 0 1 2 2v14l-3-2-3 2-3-2-3 2V6a2 2 0 0 1 2-2z"/><path d="M9 9h6M9 13h4"/></svg>&nbsp;日記カードを作る</button>
+    <a href="collection.html" id="collectionLink" class="btn-primary">図鑑で見る</a>
+    <a href="photo-pick.html" class="btn-text-link">別の写真を調べる</a>
+  </div>
+
+</div>
+<script type="module" src="/src/pages/photo-found.ts"></script>
+</body>
+</html>

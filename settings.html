@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#EEF6E2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#07140D" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/src/styles/global.css">
+  <title>設定 - YOTSUBA FINDER</title>
+</head>
+<body>
+<div class="app page-pad app--actions">
+
+  <!-- 戻るボタン -->
+  <a href="index.html" aria-label="ホームに戻る" class="btn-icon">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+  </a>
+
+  <h1 style="margin:18px 0 0;font-size:34px;line-height:1.2;font-weight:700;">設定</h1>
+
+  <!-- 保存のしかた（src/lib/save-mode.ts） -->
+  <section aria-labelledby="saveModeTitle" class="card-surface" style="margin-top:22px;padding:18px;border-radius:24px;">
+    <h2 id="saveModeTitle" style="margin:0;font-size:24px;font-weight:700;">保存のしかた</h2>
+    <p style="margin:8px 0 0;font-size:17px;line-height:1.7;color:var(--text2);">四つ葉を見つけたときに、図鑑に入れる方法です</p>
+    <div role="radiogroup" aria-labelledby="saveModeTitle" class="save-mode">
+      <button type="button" role="radio" class="save-mode-option" data-mode="confirm">
+        <span class="save-mode-name">確認してから入れる（おすすめ）</span>
+        <span class="save-mode-sub">目で見て、入れるものを えらびます</span>
+      </button>
+      <button type="button" role="radio" class="save-mode-option" data-mode="auto">
+        <span class="save-mode-name">自動で入れる</span>
+        <span class="save-mode-sub">見つけたら、そのまま 図鑑に入れます</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- あなたに合わせて調整する（src/lib/tuning.ts・src/lib/tuning-db.ts）。数字は出さない -->
+  <section aria-labelledby="tuningTitle" class="card-surface" style="margin-top:22px;padding:18px;border-radius:24px;">
+    <h2 id="tuningTitle" style="margin:0;font-size:24px;font-weight:700;">あなたに合わせて調整する</h2>
+    <p style="margin:8px 0 0;font-size:17px;line-height:1.7;color:var(--text2);">「図鑑に入れる」「入れない」の えらび方から、四つ葉の候補の出し方を、少しだけ合わせます。えらんだ記録は、この端末の中だけに残ります</p>
+    <div role="radiogroup" aria-labelledby="tuningTitle" class="save-mode">
+      <button type="button" role="radio" class="save-mode-option" data-tuning="on">
+        <span class="save-mode-name">調整する（おすすめ）</span>
+      </button>
+      <button type="button" role="radio" class="save-mode-option" data-tuning="off">
+        <span class="save-mode-name">調整しない</span>
+      </button>
+    </div>
+    <p id="tuningState" role="status" style="margin:12px 0 0;font-size:17px;line-height:1.7;"></p>
+    <button type="button" id="tuningReset" class="btn-text-link" style="width:100%;margin-top:8px;">調整を もとに もどす</button>
+  </section>
+
+  <!-- カメラの許可（何度もきかれるとき）。スキャン画面の「何度も きかれるときは」から来る -->
+  <section id="camera" aria-labelledby="cameraTitle" class="card-surface" style="margin-top:22px;padding:18px;border-radius:24px;">
+    <h2 id="cameraTitle" style="margin:0;font-size:24px;font-weight:700;">カメラの 許可</h2>
+    <p style="margin:8px 0 0;font-size:17px;line-height:1.7;">カメラの 許可が 何度も きかれるときは、iPhone で 次のように すると、きかれなくなります。</p>
+    <ol style="margin:8px 0 0;padding-left:1.4em;font-size:17px;line-height:1.7;">
+      <li>Safari で このアプリを 開き、アドレスの 左の「ぁあ」（または「≡」）を 押す</li>
+      <li>「Webサイトの設定」を 押す</li>
+      <li>「カメラ」を「許可」に する</li>
+    </ol>
+    <p style="margin:8px 0 0;font-size:17px;line-height:1.7;color:var(--text2);">すべての サイトで 決めるときは、iPhone の「設定」→「アプリ」→「Safari」→「カメラ」です。</p>
+  </section>
+
+  <!-- つかいかた（初めて開いたときの説明を、もういちど見る。src/components/tutorial.ts） -->
+  <section aria-labelledby="tutorialTitle" class="card-surface" style="margin-top:22px;padding:18px;border-radius:24px;">
+    <h2 id="tutorialTitle" style="margin:0;font-size:24px;font-weight:700;">つかいかた</h2>
+    <a href="index.html#tutorial" class="btn-secondary" style="margin-top:14px;">つかいかたを、もういちど見る</a>
+  </section>
+
+  <!-- まちがいの記録 -->
+  <section aria-labelledby="feedbackTitle" class="card-surface" style="margin-top:22px;padding:18px 18px 8px;border-radius:24px;">
+    <h2 id="feedbackTitle" style="margin:0;font-size:24px;font-weight:700;">まちがいの記録</h2>
+    <p style="margin:8px 0 0;font-size:17px;line-height:1.7;color:var(--text2);">AI は、まだ、まちがえることがあります。おしえてもらった内容は、この端末の中だけに、記録されます。書き出すのは、あなたが押したときだけです</p>
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid var(--hair);">
+      <span style="font-size:17px;font-weight:700;">記録の数</span>
+      <span><span id="feedbackCount" class="font-nunito" style="font-size:24px;font-weight:800;">0</span><span style="font-size:17px;">&nbsp;件</span></span>
+    </div>
+    <p id="feedbackMessage" role="status" hidden style="margin:12px 0 0;font-size:17px;font-weight:700;color:var(--accent);"></p>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:16px;">
+      <button type="button" id="exportBtn" class="btn-secondary">書き出す</button>
+      <button type="button" id="clearBtn" class="btn-text-link" style="color:var(--danger);">すべて消す</button>
+    </div>
+  </section>
+
+  <!-- 今日のよつばのモデルが、この端末に入っているか（src/pages/settings.ts。数字は出さない） -->
+  <section aria-labelledby="gachaTitle" class="card-surface" style="margin-top:22px;padding:18px;border-radius:24px;">
+    <h2 id="gachaTitle" style="margin:0;font-size:24px;font-weight:700;">今日のよつば</h2>
+    <p id="gachaModelStatus" style="margin:8px 0 0;font-size:17px;line-height:1.7;">今日のよつばのモデル：しらべています</p>
+  </section>
+
+  <!-- データの書き出しと読み込み（src/lib/backup.ts・src/lib/backup-db.ts）。1 つの JSON。外部との通信はしない -->
+  <section id="backup" aria-labelledby="backupTitle" class="card-surface" style="margin-top:22px;padding:18px;border-radius:24px;">
+    <h2 id="backupTitle" style="margin:0;font-size:24px;font-weight:700;">書き出しと 読み込み</h2>
+    <p style="margin:8px 0 0;font-size:17px;line-height:1.7;">図鑑・日記・きろく・まちがいの記録・設定を、1 つの ファイルに します。機種を かえるときや、もしものときに 使えます。</p>
+    <p id="persistHint" hidden style="margin:8px 0 0;font-size:17px;line-height:1.7;font-weight:700;">この ブラウザでは、データが 消えることが あります。ときどき 書き出して、ファイルを 保存してください。</p>
+    <p id="lastExport" style="margin:8px 0 0;font-size:16px;line-height:1.7;color:var(--text2);"></p>
+    <div role="radiogroup" aria-label="写真を 入れるか" class="save-mode">
+      <button type="button" role="radio" class="save-mode-option" data-photos="on" aria-checked="true">
+        <span class="save-mode-name">写真も 入れる（おすすめ）</span>
+      </button>
+      <button type="button" role="radio" class="save-mode-option" data-photos="off" aria-checked="false">
+        <span class="save-mode-name">写真なし</span>
+        <span class="save-mode-sub">ファイルが 小さくなります。まちがいの記録は 入りません</span>
+      </button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:16px;">
+      <button type="button" id="backupExport" class="btn-secondary">書き出す</button>
+      <button type="button" id="backupImport" class="btn-secondary">読み込む</button>
+    </div>
+    <input type="file" id="backupFile" accept="application/json,.json" hidden>
+    <!-- 大きいとき: 写真なしでも書き出せる -->
+    <div id="backupBig" hidden style="margin-top:14px;padding-top:12px;border-top:1px solid var(--hair);">
+      <p id="backupBigText" style="margin:0;font-size:17px;line-height:1.7;"></p>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px;">
+        <button type="button" id="backupBigKeep" class="btn-secondary">このまま 書き出す</button>
+        <button type="button" id="backupBigNoPhoto" class="btn-secondary"></button>
+      </div>
+    </div>
+    <!-- 読み込むとき: 上書きか、足すか -->
+    <div id="importChoice" hidden style="margin-top:14px;padding-top:12px;border-top:1px solid var(--hair);">
+      <p id="importSummary" style="margin:0;font-size:17px;line-height:1.7;"></p>
+      <div role="radiogroup" aria-label="読み込みかた" class="save-mode">
+        <button type="button" role="radio" class="save-mode-option" data-import="add" aria-checked="true">
+          <span class="save-mode-name">足す</span>
+          <span class="save-mode-sub">今の データに、図鑑と まちがいの記録を 足します。同じ 記録は 足しません。きろくと 設定は 今のまま</span>
+        </button>
+        <button type="button" role="radio" class="save-mode-option" data-import="replace" aria-checked="false">
+          <span class="save-mode-name">上書き</span>
+          <span class="save-mode-sub">今の データを 消して、ファイルの 中身に おきかえます</span>
+        </button>
+      </div>
+      <div id="replaceWarn" hidden style="margin-top:12px;">
+        <p style="margin:0;font-size:17px;line-height:1.7;font-weight:700;">上書きすると、今の データは 消えます。先に、今の データを 書き出してください。</p>
+        <button type="button" id="replaceExportFirst" class="btn-secondary" style="margin-top:12px;">今の データを 書き出す</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:16px;">
+        <button type="button" id="importGo" class="btn-primary">読み込む</button>
+        <button type="button" id="importCancel" class="btn-text-link">やめる</button>
+      </div>
+    </div>
+    <p id="backupMessage" role="status" hidden style="margin:12px 0 0;font-size:17px;font-weight:700;line-height:1.7;color:var(--accent);"></p>
+  </section>
+
+  <!-- すべてのデータを消す（src/lib/wipe.ts）。消す前に書き出しを案内し（飛ばせる）、そのあと 2 回押すと消える -->
+  <section aria-labelledby="wipeTitle" class="card-surface" style="margin-top:22px;padding:18px;border-radius:24px;">
+    <h2 id="wipeTitle" style="margin:0;font-size:24px;font-weight:700;">データ</h2>
+    <p style="margin:8px 0 0;font-size:17px;line-height:1.7;">データは、この端末の中だけにあり、ここから、いつでも消せます。</p>
+    <p style="margin:6px 0 0;font-size:16px;line-height:1.7;color:var(--text2);">消えるもの: 図鑑（ひとこと・日記の手書きも）・きろく（経験値・バッジ）・まちがいの記録・あなたに合わせた調整・今日のよつばの形。つかいかたの説明と、アプリとモデルの保存（オフラインで使うため）は、消えません。</p>
+    <!-- 消す前に、書き出しを案内する（飛ばせる） -->
+    <div id="wipeAsk" hidden style="margin-top:12px;">
+      <p style="margin:0;font-size:17px;line-height:1.7;font-weight:700;">消す前に、書き出しますか？ 書き出した ファイルから、あとで もどせます。</p>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px;">
+        <button type="button" id="wipeExport" class="btn-secondary">書き出す</button>
+        <button type="button" id="wipeSkip" class="btn-text-link">書き出さずに すすむ</button>
+      </div>
+    </div>
+    <p id="wipeMessage" role="status" hidden style="margin:12px 0 0;font-size:17px;font-weight:700;color:var(--accent);"></p>
+    <button type="button" id="wipeBtn" class="btn-text-link" style="width:100%;margin-top:8px;color:var(--danger);">すべてのデータを消す</button>
+  </section>
+
+  <!-- このアプリについて（ソースコード・ライセンス・クレジット・部品のライセンス。about.html） -->
+  <a href="about.html" class="btn-secondary" style="margin-top:22px;">このアプリについて</a>
+
+  <!-- アプリの版（src/pages/settings.ts・src/lib/dev-mode.ts） -->
+  <button type="button" id="versionBtn" class="btn-text-link settings-version" style="width:100%;margin-top:22px;color:var(--text2);"></button>
+  <p id="devMessage" role="status" hidden style="margin:4px 0 0;text-align:center;font-size:16px;color:var(--text2);"></p>
+
+</div>
+<script type="module" src="/src/pages/settings.ts"></script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#EEF6E2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#07140D" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/src/styles/global.css">
+  <title>このアプリについて - YOTSUBA FINDER</title>
+</head>
+<body>
+<div class="app page-pad app--actions">
+
+  <!-- 戻るボタン（設定へ） -->
+  <a href="settings.html" aria-label="設定に戻る" class="btn-icon">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+  </a>
+
+  <h1 style="margin:18px 0 0;font-size:34px;line-height:1.2;font-weight:700;">このアプリについて</h1>
+  <p id="aboutVersion" style="margin:8px 0 0;font-size:17px;color:var(--text2);"></p>
+
+  <!-- ソースコード（URL は src/lib/app-info.ts の 1 か所だけ。仮のあいだは出さない） -->
+  <section aria-labelledby="sourceTitle" class="card-surface" style="margin-top:22px;padding:18px;border-radius:24px;">
+    <h2 id="sourceTitle" style="margin:0;font-size:24px;font-weight:700;">ソースコード</h2>
+    <p style="margin:8px 0 0;font-size:17px;line-height:1.7;">このアプリは、ソースコードを 公開する ライセンスで 作っています。</p>
+    <p id="sourceWait" style="margin:8px 0 0;font-size:17px;line-height:1.7;font-weight:700;">ソースコードは、公開の 準備中です。</p>
+    <a id="sourceLink" hidden class="btn-secondary" style="margin-top:14px;" rel="noopener">ソースコードを 見る</a>
+  </section>
+
+  <!-- ライセンス（public/about/LICENSE.txt。scripts/make-licenses.mjs が LICENSE を写す） -->
+  <section aria-labelledby="licenseTitle" class="card-surface" style="margin-top:22px;padding:18px;border-radius:24px;">
+    <h2 id="licenseTitle" style="margin:0;font-size:24px;font-weight:700;">ライセンス</h2>
+    <p id="licenseName" style="margin:8px 0 0;font-size:17px;line-height:1.7;"></p>
+    <details class="about-details" data-src="/about/LICENSE.txt">
+      <summary>全文を 見る</summary>
+      <pre class="about-text"></pre>
+    </details>
+  </section>
+
+  <!-- クレジット（public/about/CREDITS.md。scripts/make-licenses.mjs が CREDITS.md を写す） -->
+  <section aria-labelledby="creditsTitle" class="card-surface" style="margin-top:22px;padding:18px;border-radius:24px;">
+    <h2 id="creditsTitle" style="margin:0;font-size:24px;font-weight:700;">クレジット</h2>
+    <p style="margin:8px 0 0;font-size:17px;line-height:1.7;">学習に 使った データ・絵・フォントの 出どころです。</p>
+    <p style="margin:8px 0 0;font-size:17px;line-height:1.7;font-weight:700;">イラスト：ChatGPT（OpenAI）で生成</p>
+    <details class="about-details" data-src="/about/CREDITS.md">
+      <summary>見る</summary>
+      <pre class="about-text"></pre>
+    </details>
+  </section>
+
+  <!-- 使っている部品のライセンス（public/about/licenses.json。scripts/make-licenses.mjs が依存関係から作る） -->
+  <section aria-labelledby="partsTitle" class="card-surface" style="margin-top:22px;padding:18px;border-radius:24px;">
+    <h2 id="partsTitle" style="margin:0;font-size:24px;font-weight:700;">使っている 部品の ライセンス</h2>
+    <p style="margin:8px 0 0;font-size:17px;line-height:1.7;">アプリと いっしょに 配っている 部品です。</p>
+    <ul id="partsList" class="about-parts"></ul>
+    <p id="partsError" hidden role="status" style="margin:8px 0 0;font-size:17px;line-height:1.7;">一覧を 読み込めませんでした。</p>
+  </section>
+
+</div>
+<script type="module" src="/src/pages/about.ts"></script>
+</body>
+</html>

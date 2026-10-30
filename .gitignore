@@ -1,0 +1,38 @@
+# 学習用の画像データ（大きいので Git に入れない）
+data/
+
+# 依存パッケージ・ビルド結果
+node_modules/
+dist/
+
+# node_modules からコピーする onnxruntime-web の wasm（scripts/copy-ort.mjs が作る）
+public/ort/
+
+# 学習済みモデル・学習の出力（大きいので Git に入れない）
+*.pt
+*.pth
+runs/
+
+# Python の一時ファイル
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# 秘密情報
+.env
+.env.*
+
+# エディタ・OS の設定
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# 速さを測るための FP16・INT8 のモデル（training/make_light_models.py が作る。大きいので Git に入れない）
+public/bench-models/
+
+# スクリーンショット（確認用。Git に入れない）
+docs/screens/
+
+# 「このアプリについて」で見せるファイル（scripts/make-licenses.mjs が作る）
+public/about/

@@ -1,0 +1,427 @@
+/* 初めて開いたときの説明（src/components/tutorial.ts）
+   文字は画面と同じ Zen Maru Gothic（見出し 700・本文 500）。16px 以上。色は濃い緑 */
+
+html.tut-open,
+html.tut-open body {
+  overflow: hidden;
+}
+
+.tut {
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+  overflow: hidden;
+  /* 画像が届くまでの、うすい緑 */
+  background: #DCEFD3;
+  color: #2F4A35;
+  font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', 'M PLUS Rounded 1c', sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  touch-action: pan-x;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ── 背景（スライドごと。重ねて、見ているものだけを出す） ── */
+.tut-bgs,
+.tut-bg {
+  position: absolute;
+  inset: 0;
+}
+
+.tut-bg {
+  opacity: 0;
+  transform: scale(1);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.tut-bg.is-active {
+  opacity: 1;
+  transform: scale(1.05);
+  /* ゆっくり大きくする（見ているあいだ） */
+  transition: opacity 0.4s ease, transform 9s ease-out;
+}
+
+.tut-bg img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  max-width: none;
+  -webkit-touch-callout: none;
+}
+
+/* ── スライド（横になぞる） ── */
+.tut-track {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+
+.tut-track::-webkit-scrollbar {
+  display: none;
+}
+
+.tut-slide {
+  flex: 0 0 100%;
+  height: 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding:
+    calc(env(safe-area-inset-top, 0px) + 28px)
+    max(20px, env(safe-area-inset-right))
+    calc(env(safe-area-inset-bottom, 0px) + 96px)
+    max(20px, env(safe-area-inset-left));
+}
+
+/* 見出し: 空の部分に、濃い緑。まわりを白くぼかして、読みやすくする */
+.tut-head {
+  text-align: center;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.9), 0 0 2px rgba(255, 255, 255, 0.9);
+}
+
+.tut-kicker {
+  margin: 0 0 4px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.tut-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.4;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+/* 説明のカード: 白い半透明・角丸。高さは画面の 40% まで（小さい画面は 50% まで） */
+.tut-card {
+  max-height: 40vh;
+  max-height: 40dvh;
+  overflow: hidden;
+  padding: 16px 18px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: 0 10px 28px rgba(20, 60, 30, 0.18);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.tut-card p {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.7;
+  /* 空白のところでだけ折り返す（ことばの途中で切らない） */
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.tut-card p + p {
+  margin-top: 6px;
+}
+
+@media (max-height: 700px) {
+  .tut-card {
+    max-height: 50vh;
+    max-height: 50dvh;
+    padding: 12px 14px;
+  }
+  .tut-card p {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  .tut-title {
+    font-size: 24px;
+  }
+  .tut-kicker {
+    font-size: 17px;
+  }
+  .tut-slide {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 16px);
+  }
+}
+
+/* とても低い画面（320×568 など）: カードの中の小さな図は出さない（文が切れたり、キャラクターの顔が隠れたりしないように） */
+@media (max-height: 600px) and (orientation: portrait) {
+  .tut-card .tut-fig {
+    display: none;
+  }
+  /* 「ホーム画面に追加」の案内: 枠の内側の余白は残し、上下だけ詰める（カードの下が切れないように） */
+  .tut-card .tut-home {
+    margin-top: 8px;
+    padding: 6px 14px;
+  }
+  .tut-card .tut-home-title,
+  .tut-card .tut-home-steps {
+    line-height: 1.5;
+  }
+}
+
+/* 横向き: カードを右に寄せ、背景の絵を左に見せる */
+@media (orientation: landscape) and (max-height: 600px) {
+  .tut-slide {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 12px);
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 76px);
+    align-items: flex-end;
+  }
+  .tut-head {
+    align-self: stretch;
+    text-align: left;
+  }
+  .tut-card {
+    width: min(46%, 420px);
+    max-height: 62vh;
+  }
+  .tut-title {
+    font-size: 24px;
+  }
+}
+
+/* ── 小さな図（説明のための絵） ── */
+.tut-fig {
+  margin-top: 10px;
+  font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', 'M PLUS Rounded 1c', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.tut-fig-popup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 16px;
+  background: #FBFDF6;
+  border: 1px solid rgba(40, 100, 50, 0.15);
+}
+
+.tut-fig-photo {
+  flex: 0 0 auto;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: #9BD083;
+  box-shadow: inset 0 0 0 3px #FFD66B;
+}
+
+.tut-fig-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.tut-fig-dots {
+  color: #1D6B33;
+  letter-spacing: 0.05em;
+}
+
+.tut-fig-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.tut-fig-keep,
+.tut-fig-skip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.tut-fig-keep {
+  color: #FFFFFF;
+  background: linear-gradient(180deg, #278440 0%, #19692F 100%);
+}
+
+.tut-fig-skip {
+  color: #2F4A35;
+  background: #EEF6E6;
+  border: 1px solid rgba(40, 100, 50, 0.2);
+}
+
+.tut-fig-btns--big {
+  justify-content: center;
+}
+
+.tut-fig-btns--big .tut-fig-keep,
+.tut-fig-btns--big .tut-fig-skip {
+  padding: 8px 18px;
+}
+
+.tut-fig-row {
+  display: flex;
+  gap: 10px;
+}
+
+.tut-fig-level,
+.tut-fig-diary {
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 14px;
+  background: #FBFDF6;
+  border: 1px solid rgba(40, 100, 50, 0.15);
+  min-width: 0;
+}
+
+.tut-fig-level {
+  flex-wrap: wrap;
+}
+
+.tut-fig-lv {
+  font-family: 'Nunito', system-ui, sans-serif;
+  font-weight: 800;
+  color: #1D6B33;
+}
+
+.tut-fig-bar {
+  flex: 1 0 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: #DDEBD6;
+  overflow: hidden;
+}
+
+.tut-fig-bar span {
+  display: block;
+  width: 60%;
+  height: 100%;
+  background: #2F9E4F;
+}
+
+.tut-fig-diary {
+  white-space: nowrap;
+  background: #FFF8E6;
+  font-weight: 700;
+}
+
+/* ── 下の操作（スキップ・位置の点・つぎへ） ── */
+.tut-controls {
+  position: absolute;
+  left: max(16px, env(safe-area-inset-left));
+  right: max(16px, env(safe-area-inset-right));
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tut-controls .tut-skip,
+.tut-controls .tut-next {
+  flex: 0 0 auto;
+  width: auto;
+  min-height: 56px;
+  white-space: nowrap;
+}
+
+.tut-controls .tut-skip {
+  min-width: 88px;
+  padding: 0 16px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 999px;
+}
+
+.tut-controls .tut-next {
+  min-width: 120px;
+  padding: 0 20px;
+}
+
+@media (max-width: 359px) {
+  .tut-controls {
+    gap: 8px;
+  }
+  .tut-controls .tut-next {
+    min-width: 104px;
+    padding: 0 16px;
+  }
+}
+
+.tut-dots {
+  display: flex;
+  gap: 8px;
+}
+
+.tut-dots span {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(23, 51, 31, 0.3);
+  transition: width 0.3s ease;
+}
+
+.tut-dots span.is-active {
+  width: 22px;
+  border-radius: 5px;
+  background: #1D6B33;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tut-bg,
+  .tut-bg.is-active {
+    transform: none;
+    transition: none;
+  }
+  .tut-dots span {
+    transition: none;
+  }
+  .tut-track {
+    scroll-behavior: auto;
+  }
+}
+
+/* 最後のスライドの「ホーム画面に追加」の案内（src/components/tutorial.ts。ホーム画面から開いたときは出さない） */
+/* 案内は、カードの中の枠に入れ、枠の内側に余白をとる（iPhone の Safari では、番号が外に出て、枠の端に寄っていた） */
+.tut-home {
+  box-sizing: border-box;
+  margin-top: 12px;
+  padding: 12px 16px;
+  border: 1px solid rgba(47, 74, 53, 0.18);
+  border-radius: 16px;
+  background: rgba(240, 247, 236, 0.9);
+}
+.tut-card .tut-home-title {
+  font-size: 16px;
+  font-weight: 700;
+}
+/* 番号は、ブラウザの印（外に出る）ではなく、枠の内側に描く */
+.tut-home-steps {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: tut-step;
+  font-size: 16px;
+  line-height: 1.7;
+}
+.tut-home-steps li {
+  display: flex;
+  gap: 4px;
+  counter-increment: tut-step;
+}
+.tut-home-steps li::before {
+  content: counter(tut-step) ".";
+  flex-shrink: 0;
+  min-width: 1.4em;
+  font-family: 'Nunito', system-ui, sans-serif;
+  font-weight: 700;
+}
+.tut-home-icon {
+  vertical-align: -4px;
+  color: #1D6B33;
+}

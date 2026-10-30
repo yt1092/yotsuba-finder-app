@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#EEF6E2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#07140D" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/src/styles/global.css">
+  <title>きろく - YOTSUBA FINDER</title>
+</head>
+<body>
+<div class="app page-pad app--actions">
+
+  <!-- 戻るボタン -->
+  <a href="index.html" aria-label="ホームに戻る" class="btn-icon">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+  </a>
+
+  <h1 style="margin:18px 0 0;font-size:34px;line-height:1.2;font-weight:700;">きろく</h1>
+
+  <!-- レベルとランク -->
+  <section class="card-surface level-card level-card--big" aria-label="レベル">
+    <span class="level-head">
+      <span class="level-lv font-nunito" id="levelLv">Lv.1</span>
+      <span class="level-rank" id="levelRank">たね</span>
+    </span>
+    <span class="level-bar" aria-hidden="true"><span class="level-bar-fill" id="levelBar"></span></span>
+    <span class="level-next" id="levelNext">次まで あと 100</span>
+  </section>
+
+  <!-- 本数 -->
+  <section class="card-surface kiroku-stats" aria-label="これまでの数">
+    <div class="kiroku-stat"><span class="kiroku-stat-label">しらべた 葉っぱ</span><span><span class="kiroku-stat-num font-nunito" id="statLeaves">0</span> 本</span></div>
+    <div class="kiroku-stat"><span class="kiroku-stat-label">見つけた 四つ葉</span><span><span class="kiroku-stat-num font-nunito" id="statFours">0</span> 本</span></div>
+    <div class="kiroku-stat"><span class="kiroku-stat-label">つくった 日記カード</span><span><span class="kiroku-stat-num font-nunito" id="statDiary">0</span> まい</span></div>
+  </section>
+  <p class="kiroku-note">四つ葉は、約5,000本に1本といわれています</p>
+
+  <!-- バッジ -->
+  <h2 style="margin:24px 0 0;font-size:24px;font-weight:700;">バッジ</h2>
+  <ul class="badge-list" id="badgeList"></ul>
+
+  <!-- きろくを消す（2 回おして確定。図鑑の記録は消さない） -->
+  <div style="margin-top:28px;text-align:center;">
+    <p id="resetMessage" role="status" hidden style="margin:0 0 8px;font-size:17px;font-weight:700;color:var(--accent);"></p>
+    <button type="button" id="resetBtn" class="btn-text-link" style="color:var(--danger);">きろくを消す</button>
+    <p class="kiroku-sub">図鑑の 四つ葉は、消えません</p>
+  </div>
+
+</div>
+<script type="module" src="/src/pages/kiroku.ts"></script>
+</body>
+</html>

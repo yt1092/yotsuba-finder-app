@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- アプリのアイコン: ホームのロゴと同じ四つ葉（#cH を 8° 回したもの）を、淡い緑の背景に置く -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F6FAEA"/>
+      <stop offset="1" stop-color="#D6E9C5"/>
+    </linearGradient>
+    <radialGradient id="gLeaf" cx="0.5" cy="0.85" r="0.95">
+      <stop offset="0" stop-color="#C9F58A"/>
+      <stop offset="0.5" stop-color="#5DC25B"/>
+      <stop offset="1" stop-color="#1F8A44"/>
+    </radialGradient>
+    <path id="lf" d="M0 0 C-15 -9 -24 -27 -11 -35 C-5 -38.5 0 -33 0 -28.5 C0 -33 5 -38.5 11 -35 C24 -27 15 -9 0 0 Z"/>
+    <g id="lfH">
+      <use href="#lf" fill="url(#gLeaf)" stroke="rgba(8,70,28,0.5)" stroke-width="0.7"/>
+      <path d="M-9 -26 L0 -17 L9 -26" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M0 -5 L0 -13" fill="none" stroke="rgba(8,70,28,0.3)" stroke-width="1" stroke-linecap="round"/>
+    </g>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <!-- 四つ葉は中央の 60% ほどに収める（マスカブルアイコンとして丸く切り抜かれても欠けないように） -->
+  <g transform="translate(256 256) scale(4.1) rotate(8)">
+    <use href="#lfH"/>
+    <use href="#lfH" transform="rotate(90)"/>
+    <use href="#lfH" transform="rotate(180)"/>
+    <use href="#lfH" transform="rotate(270)"/>
+    <circle r="2.2" fill="#F4FFC9"/>
+  </g>
+</svg>

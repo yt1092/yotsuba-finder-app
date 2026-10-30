@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1140" height="340" font-family="sans-serif" font-size="12">
+<rect width="100%" height="100%" fill="#fff"/><text x="20" y="20" font-size="14" font-weight="bold">信頼度の図（yotsuba-mix-025・評価用の半分）</text>
+<text x="56" y="36" font-weight="bold">そのまま（スコア）（ECE 0.235）</text>
+<rect x="56" y="48" width="216" height="216" fill="none" stroke="#999"/>
+<line x1="56" y1="264" x2="272" y2="48" stroke="#bbb" stroke-dasharray="4 3"/>
+<text x="56" y="278" text-anchor="middle">0</text><text x="52" y="268" text-anchor="end">0</text>
+<text x="164.0" y="278" text-anchor="middle">0.5</text><text x="52" y="160.0" text-anchor="end">0.5</text>
+<text x="272" y="278" text-anchor="middle">1</text><text x="52" y="52" text-anchor="end">1</text>
+<rect x="143.4" y="197.53846153846155" width="19.6" height="66.46153846153845" fill="#2F9E4F" fill-opacity="0.75"/>
+<circle cx="155.71796677662775" cy="164.28203322337225" r="2.5" fill="#B3261E"/>
+<text x="153.20000000000002" y="194.53846153846155" text-anchor="middle" font-size="9">13</text>
+<rect x="165.0" y="197.53846153846155" width="19.6" height="66.46153846153845" fill="#2F9E4F" fill-opacity="0.75"/>
+<circle cx="171.7704083736126" cy="148.2295916263874" r="2.5" fill="#B3261E"/>
+<text x="174.8" y="194.53846153846155" text-anchor="middle" font-size="9">13</text>
+<rect x="186.6" y="214.15384615384616" width="19.6" height="49.84615384615384" fill="#2F9E4F" fill-opacity="0.75"/>
+<circle cx="197.54313384569608" cy="122.45686615430392" r="2.5" fill="#B3261E"/>
+<text x="196.4" y="211.15384615384616" text-anchor="middle" font-size="9">13</text>
+<rect x="208.2" y="205.84615384615384" width="19.6" height="58.15384615384616" fill="#2F9E4F" fill-opacity="0.75"/>
+<circle cx="216.55078662358798" cy="103.44921337641202" r="2.5" fill="#B3261E"/>
+<text x="218.0" y="202.84615384615384" text-anchor="middle" font-size="9">26</text>
+<rect x="229.8" y="105.60000000000002" width="19.6" height="158.39999999999998" fill="#2F9E4F" fill-opacity="0.75"/>
+<circle cx="237.65963106155397" cy="82.34036893844603" r="2.5" fill="#B3261E"/>
+<text x="239.60000000000002" y="102.60000000000002" text-anchor="middle" font-size="9">45</text>
+<rect x="251.4" y="48.0" width="19.6" height="216.0" fill="#2F9E4F" fill-opacity="0.75"/>
+<circle cx="255.8168917135759" cy="64.1831082864241" r="2.5" fill="#B3261E"/>
+<text x="261.2" y="45.0" text-anchor="middle" font-size="9">11</text>
+<text x="164.0" y="292" text-anchor="middle">予測した確率</text>
+<text x="336" y="36" font-weight="bold">温度スケーリング（ECE 0.180）</text>
+<rect x="336" y="48" width="216" height="216" fill="none" stroke="#999"/>
+<line x1="336" y1="264" x2="552" y2="48" stroke="#bbb" stroke-dasharray="4 3"/>
+<text x="336" y="278" text-anchor="middle">0</text><text x="332" y="268" text-anchor="end">0</text>
+<text x="444.0" y="278" text-anchor="middle">0.5</text><text x="332" y="160.0" text-anchor="end">0.5</text>
+<text x="552" y="278" text-anchor="middle">1</text><text x="332" y="52" text-anchor="end">1</text>
+<rect x="423.4" y="197.53846153846155" width="19.6" height="66.46153846153845" fill="#2F9E4F" fill-opacity="0.75"/>
+<circle cx="438.9806395942835" cy="161.0193604057165" r="2.5" fill="#B3261E"/>
+<text x="433.2" y="194.53846153846155" text-anchor="middle" font-size="9">13</text>
+<rect x="445.0" y="188.4" width="19.6" height="75.6" fill="#2F9E4F" fill-opacity="0.75"/>
+<circle cx="453.3322423162331" cy="146.6677576837669" r="2.5" fill="#B3261E"/>
+<text x="454.8" y="185.4" text-anchor="middle" font-size="9">20</text>
+<rect x="466.6" y="216.75" width="19.6" height="47.25" fill="#2F9E4F" fill-opacity="0.75"/>
+<circle cx="475.8727992470608" cy="124.12720075293916" r="2.5" fill="#B3261E"/>
+<text x="476.40000000000003" y="213.75" text-anchor="middle" font-size="9">32</text>
+<rect x="488.2" y="104.34782608695653" width="19.6" height="159.65217391304347" fill="#2F9E4F" fill-opacity="0.75"/>
+<circle cx="494.6898429815243" cy="105.3101570184757" r="2.5" fill="#B3261E"/>
+<text x="498.0" y="101.34782608695653" text-anchor="middle" font-size="9">46</text>
+<rect x="509.8" y="48.0" width="19.6" height="216.0" fill="#2F9E4F" fill-opacity="0.75"/>
+<circle cx="513.8735710685612" cy="86.12642893143885" r="2.5" fill="#B3261E"/>
+<text x="519.6" y="45.0" text-anchor="middle" font-size="9">10</text>
+<text x="444.0" y="292" text-anchor="middle">予測した確率</text>
+<text x="616" y="36" font-weight="bold">Platt（ECE 0.182）</text>
+<rect x="616" y="48" width="216" height="216" fill="none" stroke="#999"/>
+<line x1="616" y1="264" x2="832" y2="48" stroke="#bbb" stroke-dasharray="4 3"/>
+<text x="616" y="278" text-anchor="middle">0</text><text x="612" y="268" text-anchor="end">0</text>
+<text x="724.0" y="278" text-anchor="middle">0.5</text><text x="612" y="160.0" text-anchor="end">0.5</text>
+<text x="832" y="278" text-anchor="middle">1</text><text x="612" y="52" text-anchor="end">1</text>
+<rect x="617.0" y="192.0" width="19.6" height="72.0" fill="#2F9E4F" fill-opacity="0.75"/>
+<circle cx="635.9263710147713" cy="244.07362898522868" r="2.5" fill="#B3261E"/>
+<text x="626.8" y="189.0" text-anchor="middle" font-size="9">6</text>
+<rect x="638.6" y="195.78947368421052" width="19.6" height="68.21052631578948" fill="#2F9E4F" fill-opacity="0.75"/>
+<circle cx="646.4142304358721" cy="233.5857695641279" r="2.5" fill="#B3261E"/>
+<text x="648.4" y="192.78947368421052" text-anchor="middle" font-size="9">19</text>
+<rect x="660.2" y="177.6" width="19.6" height="86.4" fill="#2F9E4F" fill-opacity="0.75"/>
+<circle cx="670.930130408537" cy="209.06986959146295" r="2.5" fill="#B3261E"/>
+<text x="670.0" y="174.6" text-anchor="middle" font-size="9">5</text>
+<rect x="681.8" y="240.0" width="19.6" height="24.0" fill="#2F9E4F" fill-opacity="0.75"/>
+<circle cx="690.0776912232288" cy="189.92230877677116" r="2.5" fill="#B3261E"/>
+<text x="691.5999999999999" y="237.0" text-anchor="middle" font-size="9">9</text>
+<rect x="703.4" y="235.2" width="19.6" height="28.80000000000001" fill="#2F9E4F" fill-opacity="0.75"/>
+<circle cx="711.5629332924541" cy="168.43706670754588" r="2.5" fill="#B3261E"/>
+<text x="713.1999999999999" y="232.2" text-anchor="middle" font-size="9">15</text>
+<rect x="725.0" y="168.0" width="19.6" height="96.0" fill="#2F9E4F" fill-opacity="0.75"/>
+<circle cx="734.5495855339791" cy="145.45041446602085" r="2.5" fill="#B3261E"/>
+<text x="734.8" y="165.0" text-anchor="middle" font-size="9">9</text>
+<rect x="746.6" y="72.0" width="19.6" height="192.0" fill="#2F9E4F" fill-opacity="0.75"/>
+<circle cx="760.1183532044092" cy="119.88164679559077" r="2.5" fill="#B3261E"/>
+<text x="756.4" y="69.0" text-anchor="middle" font-size="9">18</text>
+<rect x="768.2" y="140.57142857142858" width="19.6" height="123.42857142857142" fill="#2F9E4F" fill-opacity="0.75"/>
+<circle cx="776.4934643669936" cy="103.50653563300637" r="2.5" fill="#B3261E"/>
+<text x="778.0" y="137.57142857142858" text-anchor="middle" font-size="9">21</text>
+<rect x="789.8" y="96.0" width="19.6" height="168.0" fill="#2F9E4F" fill-opacity="0.75"/>
+<circle cx="796.7584336550872" cy="83.24156634491288" r="2.5" fill="#B3261E"/>
+<text x="799.5999999999999" y="93.0" text-anchor="middle" font-size="9">9</text>
+<rect x="811.4" y="48.0" width="19.6" height="216.0" fill="#2F9E4F" fill-opacity="0.75"/>
+<circle cx="816.4241944164031" cy="63.57580558359689" r="2.5" fill="#B3261E"/>
+<text x="821.1999999999999" y="45.0" text-anchor="middle" font-size="9">10</text>
+<text x="724.0" y="292" text-anchor="middle">予測した確率</text>
+<text x="896" y="36" font-weight="bold">等張回帰（ECE 0.094）</text>
+<rect x="896" y="48" width="216" height="216" fill="none" stroke="#999"/>
+<line x1="896" y1="264" x2="1112" y2="48" stroke="#bbb" stroke-dasharray="4 3"/>
+<text x="896" y="278" text-anchor="middle">0</text><text x="892" y="268" text-anchor="end">0</text>
+<text x="1004.0" y="278" text-anchor="middle">0.5</text><text x="892" y="160.0" text-anchor="end">0.5</text>
+<text x="1112" y="278" text-anchor="middle">1</text><text x="892" y="52" text-anchor="end">1</text>
+<rect x="897.0" y="210.0" width="19.6" height="54.0" fill="#2F9E4F" fill-opacity="0.75"/>
+<circle cx="896.0" cy="264.0" r="2.5" fill="#B3261E"/>
+<text x="906.8" y="207.0" text-anchor="middle" font-size="9">20</text>
+<rect x="940.2" y="213.6" width="19.6" height="50.400000000000006" fill="#2F9E4F" fill-opacity="0.75"/>
+<circle cx="952.3478260869565" cy="207.65217391304347" r="2.5" fill="#B3261E"/>
+<text x="950.0" y="210.6" text-anchor="middle" font-size="9">30</text>
+<rect x="1005.0" y="180.9230769230769" width="19.6" height="83.0769230769231" fill="#2F9E4F" fill-opacity="0.75"/>
+<circle cx="1019.2307692307693" cy="140.76923076923077" r="2.5" fill="#B3261E"/>
+<text x="1014.8" y="177.9230769230769" text-anchor="middle" font-size="9">13</text>
+<rect x="1048.2" y="104.57142857142856" width="19.6" height="159.42857142857144" fill="#2F9E4F" fill-opacity="0.75"/>
+<circle cx="1049.6" cy="110.39999999999998" r="2.5" fill="#B3261E"/>
+<text x="1058.0" y="101.57142857142856" text-anchor="middle" font-size="9">42</text>
+<rect x="1091.4" y="75.0" width="19.6" height="189.0" fill="#2F9E4F" fill-opacity="0.75"/>
+<circle cx="1112.0" cy="48.0" r="2.5" fill="#B3261E"/>
+<text x="1101.2" y="72.0" text-anchor="middle" font-size="9">16</text>
+<text x="1004.0" y="292" text-anchor="middle">予測した確率</text>
+<text x="20" y="332" font-size="11">緑の棒 = その区間の、本物の割合（評価用の半分）。赤い点 = 区間の予測の平均。棒の上の数 = 枠の数。点線にそろうほど、よく合っている</text>
+</svg>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#EEF6E2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#07140D" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/src/styles/global.css">
+  <title>写真：見つからない - YOTSUBA FINDER</title>
+</head>
+<body>
+<div class="app page-pad app--actions">
+
+  <!-- ヘッダー -->
+  <div style="display:flex;align-items:center;justify-content:space-between;">
+    <a href="photo-pick.html" aria-label="戻る" class="btn-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+    </a>
+  </div>
+
+  <!-- 調べた写真（最後に調べた写真があれば、イラストの代わりに出す） -->
+  <div id="photoBox" hidden style="margin-top:18px;padding:4px;border-radius:32px;background:rgba(255,255,255,0.9);box-shadow:var(--surface-shadow);">
+    <div style="position:relative;border-radius:28px;overflow:hidden;height:260px;background:#22352A;">
+      <img id="photoImg" src="" alt="調べた写真" style="width:100%;height:100%;object-fit:contain;display:block;">
+    </div>
+  </div>
+
+  <!-- まちがいの報告: 見逃した四つ葉の場所を教える（目立たない文字のボタン。押したあと、写真をタップ） -->
+  <button type="button" id="missedBtn" class="btn-text-link" hidden style="width:100%;margin-top:12px;">四つ葉を見逃している</button>
+
+  <!-- 三つ葉のみのイラスト（写真が無いとき） -->
+  <div id="illustBox" style="margin-top:18px;padding:4px;border-radius:32px;background:rgba(255,255,255,0.9);box-shadow:var(--surface-shadow);">
+    <svg width="100%" height="220" viewBox="0 0 350 330" preserveAspectRatio="xMidYMid slice" aria-label="三つ葉だけが写った写真" style="display:block;border-radius:28px;">
+      <rect width="350" height="330" fill="url(#gGrass)"/>
+      <rect width="350" height="330" fill="url(#gSun)"/>
+      <g fill="#78C063" opacity="0.7">
+        <ellipse cx="300" cy="300" rx="40" ry="20"/>
+        <ellipse cx="40" cy="290" rx="34" ry="18"/>
+      </g>
+      <use href="#lf" fill="#4DA653" stroke="rgba(8,70,28,0.4)" stroke-width="0.7" transform="translate(90 110) rotate(10) scale(2)"/>
+      <use href="#lf" fill="#4DA653" stroke="rgba(8,70,28,0.4)" stroke-width="0.7" transform="translate(130 110) rotate(130) scale(2)"/>
+      <use href="#lf" fill="#4DA653" stroke="rgba(8,70,28,0.4)" stroke-width="0.7" transform="translate(90 150) rotate(250) scale(2)"/>
+      <use href="#lf" fill="#58B05A" stroke="rgba(8,70,28,0.4)" stroke-width="0.7" transform="translate(255 100) rotate(-14) scale(2.1)"/>
+      <use href="#lf" fill="#58B05A" stroke="rgba(8,70,28,0.4)" stroke-width="0.7" transform="translate(295 100) rotate(106) scale(2.1)"/>
+      <use href="#lf" fill="#58B05A" stroke="rgba(8,70,28,0.4)" stroke-width="0.7" transform="translate(255 140) rotate(226) scale(2.1)"/>
+      <use href="#lf" fill="#4DA653" stroke="rgba(8,70,28,0.4)" stroke-width="0.7" transform="translate(175 262) rotate(24) scale(2.2)"/>
+      <use href="#lf" fill="#4DA653" stroke="rgba(8,70,28,0.4)" stroke-width="0.7" transform="translate(215 262) rotate(144) scale(2.2)"/>
+      <use href="#lf" fill="#4DA653" stroke="rgba(8,70,28,0.4)" stroke-width="0.7" transform="translate(175 302) rotate(264) scale(2.2)"/>
+      <!-- 三つ葉ラベル -->
+      <g font-family="Zen Maru Gothic, sans-serif" font-size="12" font-weight="700" fill="#17331F" text-anchor="middle">
+        <rect x="58" y="14" width="64" height="22" rx="11" fill="rgba(255,255,255,0.92)"/>
+        <text x="90" y="30">三つ葉</text>
+        <rect x="223" y="1" width="64" height="22" rx="11" fill="rgba(255,255,255,0.92)"/>
+        <text x="255" y="17">三つ葉</text>
+        <rect x="143" y="166" width="64" height="22" rx="11" fill="rgba(255,255,255,0.92)"/>
+        <text x="175" y="182">三つ葉</text>
+      </g>
+    </svg>
+  </div>
+
+  <!-- 結果テキスト -->
+  <div style="text-align:center;margin-top:22px;">
+    <!-- 見出しと、その下の文（src/lib/result-text.ts。例: 「四つ葉は 見つかりませんでした」／「三つ葉が 47本 ありました」） -->
+    <img class="mascot mascot-center" src="/images/mascot/smile.webp" alt="" aria-hidden="true" width="82" height="64">
+    <h1 id="resultTitle" style="margin:0;font-size:26px;line-height:1.35;font-weight:700;word-break:keep-all;overflow-wrap:anywhere;">四つ葉は 見つかりませんでした</h1>
+    <p id="resultLead" hidden style="margin:8px 0 0;font-size:18px;font-weight:700;line-height:1.5;"></p>
+    <p id="leafCountText" hidden style="margin:8px 0 0;font-size:18px;font-weight:700;line-height:1.5;"></p>
+    <!-- 経験値（今回の写真で入った点。同じ写真の 2 回目は出さない） -->
+    <p id="xpText" class="xp-text" hidden></p>
+    <p style="margin:6px 0 0;font-size:17px;line-height:1.6;color:var(--text2);">
+      ほかの写真も、ためしてみましょう。
+    </p>
+    <div style="display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:8px 16px;border-radius:999px;font-size:16px;font-weight:700;color:var(--accent);background:var(--chip);">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
+      葉に近づいて撮ると見つけやすくなります
+    </div>
+  </div>
+
+  <!-- ボタン -->
+  <div class="bottom-actions">
+    <a href="photo-pick.html" class="btn-primary">別の写真を調べる</a>
+    <a href="scan.html" class="btn-text-link">カメラで探す</a>
+  </div>
+
+</div>
+<script type="module" src="/src/pages/photo-none.ts"></script>
+</body>
+</html>

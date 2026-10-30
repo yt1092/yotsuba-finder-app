@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#EEF6E2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#07140D" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/src/styles/global.css">
+  <title>記録の詳細 - YOTSUBA FINDER</title>
+  <style>
+    /* Detail 画面固有のスタイル */
+    body { background: var(--bg); }
+    @media (prefers-color-scheme: dark) { body { background: #07140D; } }
+  </style>
+</head>
+<body>
+<div class="app app--actions" style="background: var(--bg);">
+
+  <!-- 上部：フルブリード写真（高さ 400px。低い画面では縮める） -->
+  <div style="position:relative;height:min(400px,52dvh);flex-shrink:0;overflow:hidden;background:#B4E08E;">
+    <img id="detailImg" src="" alt="発見した四つ葉の写真"
+      style="width:100%;height:100%;object-fit:cover;display:block;">
+    <!-- 写真の上にグラデーションオーバーレイ -->
+    <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 60%,rgba(10,42,18,0.35) 100%);pointer-events:none;"></div>
+    <!-- 戻るボタン（glass） -->
+    <a href="collection.html" aria-label="戻る" class="btn-glass"
+      style="position:absolute;left:max(24px,env(safe-area-inset-left));top:var(--safe-top);">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+    </a>
+    <!-- その他メニュー（glass） -->
+    <button type="button" id="moreBtn" aria-label="その他" class="btn-glass"
+      style="position:absolute;right:max(24px,env(safe-area-inset-right));top:var(--safe-top);padding:0;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+    </button>
+  </div>
+
+  <!-- 下部シート（丸角で写真に重なる） -->
+  <div class="detail-sheet">
+    <!-- タイトル -->
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <h1 id="detailLabel" style="margin:0;font-size:30px;font-weight:700;">四つ葉</h1>
+    </div>
+
+    <!-- 「今日のよつば」の記録のときだけ（文は src/lib/gacha.ts。src/pages/detail.ts） -->
+    <p id="detailGacha" hidden style="margin:4px 0 0;font-size:16px;font-weight:700;color:var(--text2);"></p>
+    <p id="detailGachaModel" hidden style="margin:2px 0 0;font-size:16px;font-weight:500;color:var(--text2);"></p>
+    <!-- 写真なしで書き出したファイルから読み込んだ記録のときだけ（src/lib/backup.ts） -->
+    <p id="detailNoPhoto" hidden style="margin:4px 0 0;font-size:16px;font-weight:700;color:var(--text2);">写真は、書き出した ファイルに 入っていませんでした</p>
+
+    <!-- 日時（Nunito フォント） -->
+    <p id="detailDate" style="margin:4px 0 0;font-family:'Nunito',system-ui,sans-serif;font-size:17px;font-weight:700;color:var(--text2);"></p>
+
+    <!-- 写真から探したときの、葉の数（その記録に数があるときだけ） -->
+    <p id="detailCounts" hidden style="margin:10px 0 0;font-size:18px;font-weight:700;line-height:1.5;"></p>
+
+    <!-- ひとこと（日記カードにも書く。タップで直せる。前の「メモ」もここに入っている） -->
+    <div id="noteBox" style="margin-top:18px;padding:14px 16px;border-radius:20px;background:var(--field);">
+      <div style="font-size:16px;font-weight:700;color:var(--text2);">ひとこと</div>
+      <button type="button" id="noteText" style="display:flex;align-items:center;width:100%;min-height:56px;margin-top:4px;padding:0;border:none;background:none;text-align:left;font-family:inherit;font-size:18px;color:var(--text);cursor:pointer;"></button>
+    </div>
+
+    <!-- 手書きのある日記カードの、小さな見本（手書きがあるときだけ。タップで日記カードをひらく） -->
+    <button type="button" id="inkCard" class="ink-card-thumb" hidden aria-label="てがきの 日記カードを ひらく"><img id="inkCardImg" alt=""></button>
+
+    <!-- 日記カードを作る（四つ葉の記録だけ） -->
+    <button type="button" id="diaryBtn" class="btn-secondary" hidden style="margin-top:12px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4h10a2 2 0 0 1 2 2v14l-3-2-3 2-3-2-3 2V6a2 2 0 0 1 2-2z"/><path d="M9 9h6M9 13h4"/></svg>&nbsp;日記カードを作る</button>
+
+    <!-- ボタン行 -->
+    <div class="bottom-actions" style="flex-direction:row;">
+      <button id="shareBtn" class="btn-primary" style="flex:1;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M7.5 7.5L12 3l4.5 4.5M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>
+        共有する
+      </button>
+      <button id="deleteBtn" aria-label="削除"
+        style="width:56px;height:56px;box-sizing:border-box;border-radius:28px;display:flex;align-items:center;justify-content:center;color:var(--danger);border:1.5px solid var(--danger-line);background:var(--danger-bg);cursor:pointer;flex-shrink:0;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6.5 7l1 13h9l1-13M10 11v6M14 11v6"/></svg>
+      </button>
+    </div>
+  </div>
+
+</div>
+<script type="module" src="/src/pages/detail.ts"></script>
+</body>
+</html>
